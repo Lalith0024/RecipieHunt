@@ -3,12 +3,25 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../style/Header.css';
 import { Drawer } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
-import { FaUserCircle } from 'react-icons/fa';
+import { FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
+import { useAuth } from '../contexts/AuthContext';
 
 const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   const handleProfileClick = () => {
     setDrawerOpen(false);
@@ -40,6 +53,9 @@ const Header = () => {
       <li className="user-menu" onClick={handleProfileClick} style={{cursor:'pointer'}}>
         <span className="profile-desktop"><FaUserCircle size={26} /></span>
       </li>
+      <li className="logout-menu" onClick={handleLogout} style={{cursor:'pointer'}}>
+        <span className="logout-desktop"><FaSignOutAlt size={20} /></span>
+      </li>
     </ul>
   );
 
@@ -69,6 +85,9 @@ const Header = () => {
         <Link to="/profile" className={location.pathname === '/profile' ? 'active' : ''} onClick={() => setDrawerOpen(false)}>
           Profile
         </Link>
+      </li>
+      <li className="logout-menu" style={{cursor:'pointer'}}>
+        <span onClick={handleLogout}>Logout</span>
       </li>
     </ul>
   );

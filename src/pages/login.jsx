@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import '../style/login.css';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -11,6 +13,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorShown, setErrorShown] = useState(false);
   const [agreed, setAgreed] = useState(false);
+  const [loading, setLoading] = useState(false);
   const btnRef = useRef(null);
 
   const validateEmail = email.includes('@');
@@ -35,12 +38,32 @@ const Login = () => {
     }
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (isFormValid) {
-      resetButtonPosition();
-      toast.success('Login successful');
-      navigate('/home');
+      setLoading(true);
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        resetButtonPosition();
+        toast.success('Login successful! Welcome back to RecipeHunt!');
+        navigate('/home');
+      } catch (error) {
+        let errorMessage = 'Login failed. Please try again.';
+        
+        if (error.code === 'auth/user-not-found') {
+          errorMessage = 'No account found with this email. Please register first.';
+        } else if (error.code === 'auth/wrong-password') {
+          errorMessage = 'Incorrect password. Please try again.';
+        } else if (error.code === 'auth/invalid-email') {
+          errorMessage = 'Please enter a valid email address.';
+        } else if (error.code === 'auth/too-many-requests') {
+          errorMessage = 'Too many failed attempts. Please try again later.';
+        }
+        
+        toast.error(errorMessage);
+      } finally {
+        setLoading(false);
+      }
     } else {
       setErrorShown(true);
       toast.error('Please fill all fields correctly');
@@ -103,8 +126,9 @@ const Login = () => {
             className="login-btn"
             type="submit"
             onMouseEnter={handleHover}
+            disabled={loading}
           >
-            Log In
+            {loading ? "Logging In..." : "Log In"}
           </button>
         </div>
         <p className="register-link">

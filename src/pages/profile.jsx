@@ -4,20 +4,30 @@ import { toast } from 'react-toastify';
 import Header from '../components/header.jsx';
 import Footer from '../components/footer.jsx';
 import '../style/profile.css';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
+import { useAuth } from '../contexts/AuthContext';
 
 function Profile() {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
   const [profile, setProfile] = useState({
-    name: 'Lalith Kasula',
-    email: 'lalith@gmail.com',
+    name: currentUser?.displayName || 'User',
+    email: currentUser?.email || 'user@example.com',
     address: 'Hyderabad, India',
   });
   const [editProfile, setEditProfile] = useState(profile);
 
-  const handleLogout = () => {
-    toast.success('Logged out successfully');
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      toast.success('Logged out successfully! See you soon!');
+      navigate('/');
+    } catch (error) {
+      toast.error('Error logging out. Please try again.');
+      console.error('Logout error:', error);
+    }
   };
   const handleBack = () => {
     navigate(-1);

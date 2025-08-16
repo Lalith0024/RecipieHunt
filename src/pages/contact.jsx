@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../style/Contact.css';
 import BackgroundImage from '../../images/ChatGPT Image Jun 16, 2025, 03_32_27 PM.png';
 import Header from '../components/header.jsx';
@@ -6,9 +6,30 @@ import Footer from '../components/footer.jsx';
 import { toast } from 'react-toastify';
 
 function Contact() {
-  const handleSubmit = (e) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.success('Message sent successfully');
+    setLoading(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      setLoading(false);
+      toast.success('Message sent successfully! We\'ll get back to you soon.');
+      setFormData({ name: '', email: '', message: '' });
+    }, 1500);
   };
   return (
     <>
@@ -33,21 +54,29 @@ function Contact() {
                 type="text"
                 name="name"
                 placeholder="Your Name"
+                value={formData.name}
+                onChange={handleInputChange}
                 required
               />
               <input
                 type="email"
                 name="email"
                 placeholder="Your Email"
+                value={formData.email}
+                onChange={handleInputChange}
                 required
               />
               <textarea
                 name="message"
                 rows="6"
                 placeholder="Your Message"
+                value={formData.message}
+                onChange={handleInputChange}
                 required
               ></textarea>
-              <button type="submit">Send Message</button>
+              <button type="submit" disabled={loading}>
+                {loading ? 'Sending...' : 'Send Message'}
+              </button>
             </form>
           </div>
           <div className="floating-food">🍝</div>
