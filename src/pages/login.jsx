@@ -1,23 +1,35 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../style/login.css';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useAuth } from '../contexts/AuthContext.jsx';
+import { mapFirebaseError } from '../utils/firebaseErrorMessages';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { login } = useAuth();
+  const [globalError, setGlobalError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [errorShown, setErrorShown] = useState(false);
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const btnRef = useRef(null);
 
-  const validateEmail = email.includes('@');
-  const isFormValid = validateEmail && password.length > 0 && agreed;
+  const schema = z.object({
+    email: z.string().email('Please enter a valid email address'),
+    password: z.string().min(6, 'Password must be at least 6 characters long'),
+  });
+
+  const { register, handleSubmit, formState: { errors }, setFocus, watch } = useForm({
+    resolver: zodResolver(schema),
+    mode: 'onSubmit',
+  });
+
+  const emailValue = watch('email');
+  const passwordValue = watch('password');
+  const isFormValid = !!emailValue && !!passwordValue && agreed && !errors.email && !errors.password;
 
   const shiftClasses = ['shift-left', 'shift-right', 'shift-top', 'shift-bottom'];
 
@@ -32,41 +44,27 @@ const Login = () => {
         shiftClasses[(shiftClasses.indexOf(currentClass) + 1) % shiftClasses.length];
       shiftClasses.forEach(cls => btnRef.current.classList.remove(cls));
       btnRef.current.classList.add(nextClass);
-      setErrorShown(true);
     } else {
       resetButtonPosition();
     }
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    if (isFormValid) {
-      setLoading(true);
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        resetButtonPosition();
-        toast.success('Login successful! Welcome back to RecipeHunt!');
-        navigate('/home');
-      } catch (error) {
-        let errorMessage = 'Login failed. Please try again.';
-        
-        if (error.code === 'auth/user-not-found') {
-          errorMessage = 'No account found with this email. Please register first.';
-        } else if (error.code === 'auth/wrong-password') {
-          errorMessage = 'Incorrect password. Please try again.';
-        } else if (error.code === 'auth/invalid-email') {
-          errorMessage = 'Please enter a valid email address.';
-        } else if (error.code === 'auth/too-many-requests') {
-          errorMessage = 'Too many failed attempts. Please try again later.';
-        }
-        
-        toast.error(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      setErrorShown(true);
-      toast.error('Please fill all fields correctly');
+  const onSubmit = async (data) => {
+    if (!agreed) {
+      setGlobalError('You must accept terms to continue');
+      setFocus('email');
+      return;
+    }
+    setGlobalError('');
+    setLoading(true);
+    try {
+      await login(data.email, data.password);
+      navigate('/home');
+    } catch (error) {
+      setGlobalError(mapFirebaseError(error, 'Login failed. Please try again.'));
+      if (errors.email) setFocus('email'); else setFocus('password');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -76,27 +74,25 @@ const Login = () => {
         <h1 className="brand-name">🍲 RecipeHunt</h1>
         <p className="tagline">Discover. Cook. Enjoy.</p>
       </div>
-      <form className="login-form" onSubmit={handleLogin}>
+      <form className="login-form" onSubmit={handleSubmit(onSubmit)} aria-live="polite">
         <h2>Login to Continue</h2>
-        <div className={`input-box ${errorShown && !validateEmail ? 'error' : ''}`}>
+        <div className={`input-box ${errors.email ? 'error' : ''}`}>
           <label>Email</label>
           <input
             type="email"
             placeholder="example@gmail.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            {...register('email')}
           />
-          {errorShown && !validateEmail && (
-            <span className="tooltip">Must include '@'</span>
+          {errors.email && (
+            <span className="tooltip" role="alert">{errors.email.message}</span>
           )}
         </div>
-        <div className={`input-box ${errorShown && password === '' ? 'error' : ''}`}>
+        <div className={`input-box ${errors.password ? 'error' : ''}`}>
           <label>Password</label>
           <input
             type={showPassword ? 'text' : 'password'}
             placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            {...register('password')}
           />
           <span
             className="toggle-password"
@@ -104,8 +100,8 @@ const Login = () => {
           >
             {showPassword ? 'Hide' : 'Show'}
           </span>
-          {errorShown && password === '' && (
-            <span className="tooltip">Password required</span>
+          {errors.password && (
+            <span className="tooltip" role="alert">{errors.password.message}</span>
           )}
         </div>
         <div className="checkbox-wrapper">
@@ -117,8 +113,8 @@ const Login = () => {
           />
           <label htmlFor="agree">I accept the Terms & Conditions</label>
         </div>
-        {errorShown && !agreed && (
-          <span className="tooltip">You must accept terms to continue</span>
+        {!!globalError && (
+          <span className="tooltip" role="alert">{globalError}</span>
         )}
         <div className="button-wrapper">
           <button

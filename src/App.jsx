@@ -10,6 +10,7 @@ import Login from './pages/login.jsx';
 import Register from './pages/register.jsx';
 import Profile from './pages/profile.jsx';
 import { AuthProvider } from './contexts/AuthContext.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 import { Routes, Route, Navigate } from 'react-router-dom';
 
@@ -26,7 +27,7 @@ function App() {
             <Route path="/categories" element={<Categories />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="*" element={<Navigate to="/home" replace />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           </Routes>
         </main>
       </div>

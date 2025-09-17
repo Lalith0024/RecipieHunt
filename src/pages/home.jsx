@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../style/home.css';
 import Header from '../components/header.jsx';
 import Footer from '../components/footer.jsx';
+import { toast } from 'react-toastify';
 
 function Home() {
   const heroImages = [
@@ -36,6 +37,12 @@ function Home() {
       .then(data => {
         setRecipes(data.recipes || []);
         setLoading(false);
+        toast.success('Loaded fresh recipes for you!');
+      })
+      .catch(error => {
+        setLoading(false);
+        toast.error('Failed to load recipes. Please try again.');
+        console.error('Error fetching recipes:', error);
       });
   }
 
@@ -46,6 +53,16 @@ function Home() {
       .then(data => {
         setRecipes(data.results || []);
         setLoading(false);
+        if (data.results && data.results.length > 0) {
+          toast.success(`Found ${data.results.length} recipes for "${query}"`);
+        } else {
+          toast.warning(`No recipes found for "${query}". Try different keywords.`);
+        }
+      })
+      .catch(error => {
+        setLoading(false);
+        toast.error('Search failed. Please try again.');
+        console.error('Error searching recipes:', error);
       });
   }
 
@@ -54,9 +71,11 @@ function Home() {
     if (search.trim() === '') {
       fetchRandomRecipes();
       setSearching(false);
+      toast.info('Showing popular recipes');
     } else {
       fetchSearchRecipes(search);
       setSearching(true);
+      toast.info(`Searching for "${search}"...`);
     }
   }
 
@@ -65,14 +84,22 @@ function Home() {
       setSelectedRecipe(recipe);
       setModalOpen(true);
       setModalLoading(false);
+      toast.info(`Opening ${recipe.title}`);
     } else {
       setModalLoading(true);
       setModalOpen(true);
+      toast.info('Loading recipe details...');
       fetch(`https://api.spoonacular.com/recipes/${recipe.id}/information?apiKey=d5dc6a6d47af468fa68072cc1f0700b9`)
         .then(res => res.json())
         .then(data => {
           setSelectedRecipe(data);
           setModalLoading(false);
+          toast.success('Recipe details loaded!');
+        })
+        .catch(error => {
+          setModalLoading(false);
+          toast.error('Failed to load recipe details. Please try again.');
+          console.error('Error loading recipe:', error);
         });
     }
   }
