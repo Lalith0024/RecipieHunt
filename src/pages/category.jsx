@@ -3,109 +3,106 @@ import '../style/home.css';
 import Header from '../components/header.jsx';
 import Footer from '../components/footer.jsx';
 
+const API_KEY = 'd5dc6a6d47af468fa68072cc1f0700b9';
+
 const CATEGORIES = [
-  { label: 'All', value: '' },
-  { label: 'Breakfast', value: 'breakfast' },
-  { label: 'Lunch', value: 'lunch' },
-  { label: 'Dinner', value: 'dinner' },
-  { label: 'Dessert', value: 'dessert' },
-  { label: 'Snack', value: 'snack' },
-  { label: 'Beverage', value: 'beverage' },
-  { label: 'Salad', value: 'salad' },
-  { label: 'Soup', value: 'soup' },
-  { label: 'Appetizer', value: 'appetizer' },
+  { name: 'Breakfast', img: 'https://cdn-icons-png.flaticon.com/512/706/706918.png' },
+  { name: 'Main Course', img: 'https://cdn-icons-png.flaticon.com/512/2718/2718314.png' },
+  { name: 'Dessert', img: 'https://cdn-icons-png.flaticon.com/512/10054/10054320.png' },
+  { name: 'Appetizer', img: 'https://cdn-icons-png.flaticon.com/512/2550/2550186.png' },
+  { name: 'Salad', img: 'https://cdn-icons-png.flaticon.com/512/2153/2153788.png' },
+  { name: 'Soup', img: 'https://cdn-icons-png.flaticon.com/512/4359/4359654.png' },
+  { name: 'Beverage', img: 'https://cdn-icons-png.flaticon.com/512/3100/3100555.png' },
+  { name: 'Snack', img: 'https://cdn-icons-png.flaticon.com/512/2252/2252258.png' },
 ];
 
 function Category() {
   const [category, setCategory] = useState('');
   const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
 
   useEffect(() => {
-    fetchRecipes();
+    if (category) {
+      fetchRecipes();
+    }
   }, [category]);
 
-  function fetchRecipes() {
+  const fetchRecipes = async () => {
     setLoading(true);
-    let url = 'https://api.spoonacular.com/recipes/complexSearch?number=12&addRecipeInformation=true&apiKey=d5dc6a6d47af468fa68072cc1f0700b9';
-    if (category) {
-      url += `&type=${category}`;
+    try {
+      const res = await fetch(`https://api.spoonacular.com/recipes/complexSearch?type=${category.toLowerCase()}&number=20&addRecipeInformation=true&apiKey=${API_KEY}`);
+      const data = await res.json();
+      setRecipes(data.results || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
-        setRecipes(data.results || []);
-        setLoading(false);
-      });
-  }
+  };
 
-  function openModal(recipe) {
-    if (recipe.extendedIngredients && recipe.instructions) {
-      setSelectedRecipe(recipe);
-      setModalOpen(true);
+  const openModal = async (recipeId) => {
+    setModalOpen(true);
+    setModalLoading(true);
+    try {
+      const res = await fetch(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${API_KEY}`);
+      const data = await res.json();
+      setSelectedRecipe(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
       setModalLoading(false);
-    } else {
-      setModalLoading(true);
-      setModalOpen(true);
-      fetch(`https://api.spoonacular.com/recipes/${recipe.id}/information?apiKey=d5dc6a6d47af468fa68072cc1f0700b9`)
-        .then(res => res.json())
-        .then(data => {
-          setSelectedRecipe(data);
-          setModalLoading(false);
-        });
     }
-  }
-  function closeModal() {
-    setModalOpen(false);
-    setSelectedRecipe(null);
-    setModalLoading(false);
-  }
+  };
 
   return (
-    <>
+    <div className="page-wrapper">
       <Header />
-      <section className="category-section">
-        <div className="category-container">
-          <h1 className="category-title">Browse by Category</h1>
-          <p className="category-subtitle">
-            Pick a vibe and discover recipes that match your mood.
-          </p>
-          <div className="category-filter-group">
-            <label htmlFor="category-select" className="category-label">Category:</label>
-            <select
-              id="category-select"
-              className="category-select"
-              value={category}
-              onChange={e => setCategory(e.target.value)}
-            >
-              {CATEGORIES.map(cat => (
-                <option key={cat.value} value={cat.value}>{cat.label}</option>
+
+      <div style={{ marginTop: '100px' }}>
+        <section className="categories-section">
+          <div className="main-container">
+            <h1 className="hero-title" style={{ color: 'var(--text-main)', fontSize: '3rem', marginBottom: '40px' }}>Explore Cuisines</h1>
+            <div className="cat-scroll-wrapper">
+              {CATEGORIES.map((cat, i) => (
+                <div key={i} className={`cat-item ${category === cat.name ? 'active' : ''}`} onClick={() => setCategory(cat.name)}>
+                  <div className="cat-img-box" style={category === cat.name ? { borderColor: 'var(--primary)' } : {}}>
+                    <img src={cat.img} alt={cat.name} />
+                  </div>
+                  <span className="cat-name">{cat.name}</span>
+                </div>
               ))}
-            </select>
+            </div>
           </div>
+        </section>
+
+        <div className="main-container" style={{ minHeight: '400px', paddingTop: '40px' }}>
+          {!category && (
+            <div style={{ textAlign: 'center', padding: '100px 0', color: 'var(--text-muted)' }}>
+              <h2>Choose a category to start your journey</h2>
+            </div>
+          )}
+
           {loading ? (
-            <div className="loading-recipes">Loading recipes...</div>
+            <div style={{ textAlign: 'center', padding: '100px 0' }}>Loading gourmet recipes...</div>
           ) : (
             <div className="recipe-grid">
               {recipes.map(recipe => (
-                <div className="recipe-card" key={recipe.id} onClick={() => openModal(recipe)}>
-                  <div className="recipe-img-wrapper">
-                    <img src={recipe.image} alt={recipe.title} className="recipe-img" />
-                    {recipe.healthScore > 70 && <span className="health-badge">Healthy Choice</span>}
-                  </div>
-                  <div className="recipe-info">
-                    <h3 className="recipe-title">{recipe.title}</h3>
-                    <div className="recipe-meta">
-                      <span>🕒 {recipe.readyInMinutes} min</span>
-                      <span>👥 {recipe.servings} serving</span>
+                <div key={recipe.id} className="recipe-card" onClick={() => openModal(recipe.id)}>
+                  <div className="card-img-wrapper">
+                    <img src={recipe.image} alt={recipe.title} className="card-img" />
+                    <div className="card-overlay">
+                      <span className="card-time">{recipe.readyInMinutes} MINS</span>
                     </div>
-                    <div className="recipe-attributes">
-                      {recipe.vegetarian && <span className="attr-tag veg">Veg</span>}
-                      {recipe.glutenFree && <span className="attr-tag gf">Gluten-Free</span>}
-                      {recipe.dairyFree && <span className="attr-tag df">Dairy-Free</span>}
+                  </div>
+                  <div className="card-info">
+                    <h3 className="card-title">{recipe.title}</h3>
+                    <div className="card-meta">
+                      <span className="rating-star">★ {(recipe.healthScore / 20).toFixed(1)}</span>
+                      <span>•</span>
+                      <span>{recipe.servings} Servings</span>
                     </div>
                   </div>
                 </div>
@@ -113,43 +110,44 @@ function Category() {
             </div>
           )}
         </div>
-      </section>
+      </div>
+
       {modalOpen && (
-        <div className="modal-bg" onClick={closeModal}>
-          <div className="modal-box" style={{ padding: '32px 24px 32px 24px' }} onClick={e => e.stopPropagation()}>
-            <button className="modal-close" onClick={closeModal}>&times;</button>
+        <div className="modal-overlay" onClick={() => setModalOpen(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <button className="modal-close-btn" onClick={() => setModalOpen(false)}>×</button>
             {modalLoading || !selectedRecipe ? (
-              <div className="modal-loading">Loading...</div>
+              <div style={{ padding: '100px', textAlign: 'center' }}>Loading...</div>
             ) : (
               <>
-                <img src={selectedRecipe.image} alt={selectedRecipe.title} className="modal-img" />
-                <h2 className="modal-title">{selectedRecipe.title}</h2>
-                <div className="modal-meta">
-                  <span>🕒 {selectedRecipe.readyInMinutes} min</span>
-                  <span>{selectedRecipe.servings} servings</span>
+                <div className="modal-header-img">
+                  <img src={selectedRecipe.image} alt={selectedRecipe.title} />
                 </div>
-                <div className="modal-section">
-                  <h3>Ingredients</h3>
-                  <ul className="modal-ingredients">
-                    {Array.isArray(selectedRecipe.extendedIngredients) && selectedRecipe.extendedIngredients.length > 0 ? (
-                      selectedRecipe.extendedIngredients.map((ing, idx) => (
-                        <li key={idx}>{ing.original}</li>
-                      ))
-                    ) : (
-                      <li>No ingredients available.</li>
-                    )}
-                  </ul>
-                </div>
-                <div className="modal-section">
-                  <h3>Instructions</h3>
-                  <div className="modal-instructions">
-                    {selectedRecipe.instructions ? (
-                      <p>{selectedRecipe.instructions.replace(/<[^>]+>/g, '').replace(/\d+\./g, '').replace(/\s+/g, ' ').trim()}</p>
-                    ) : selectedRecipe.analyzedInstructions && selectedRecipe.analyzedInstructions.length > 0 ? (
-                      <p>{selectedRecipe.analyzedInstructions[0].steps.map((step) => step.step).join(' ')}</p>
-                    ) : (
-                      <p>No instructions available.</p>
-                    )}
+                <div className="modal-body">
+                  <h2 className="modal-main-title">{selectedRecipe.title}</h2>
+                  <div className="modal-stats">
+                    <div className="stat-block">
+                      <span className="stat-label">Prep Time</span>
+                      <span className="stat-value">{selectedRecipe.readyInMinutes} Mins</span>
+                    </div>
+                    <div className="stat-block">
+                      <span className="stat-label">Servings</span>
+                      <span className="stat-value">{selectedRecipe.servings}</span>
+                    </div>
+                  </div>
+                  <div className="modal-inner-grid">
+                    <div>
+                      <h3>Ingredients</h3>
+                      <ul className="ingredients-list">
+                        {selectedRecipe.extendedIngredients?.map((ing, k) => (
+                          <li key={k}>{ing.original}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h3>Instructions</h3>
+                      <div className="instructions-text" dangerouslySetInnerHTML={{ __html: selectedRecipe.instructions }} />
+                    </div>
                   </div>
                 </div>
               </>
@@ -158,7 +156,7 @@ function Category() {
         </div>
       )}
       <Footer />
-    </>
+    </div>
   );
 }
 

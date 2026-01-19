@@ -2,225 +2,254 @@ import React, { useState, useEffect } from 'react';
 import '../style/home.css';
 import Header from '../components/header.jsx';
 import Footer from '../components/footer.jsx';
-import { toast } from 'react-toastify';
+
+const API_KEY = 'd5dc6a6d47af468fa68072cc1f0700b9';
+
+const QUICK_CATEGORIES = [
+  { name: 'Pizza', img: 'https://cdn-icons-png.flaticon.com/512/3595/3595455.png' },
+  { name: 'Burger', img: 'https://cdn-icons-png.flaticon.com/512/706/706918.png' },
+  { name: 'Pasta', img: 'https://cdn-icons-png.flaticon.com/512/2718/2718314.png' },
+  { name: 'Salad', img: 'https://cdn-icons-png.flaticon.com/512/2153/2153788.png' },
+  { name: 'Dessert', img: 'https://cdn-icons-png.flaticon.com/512/10054/10054320.png' },
+  { name: 'Drinks', img: 'https://cdn-icons-png.flaticon.com/512/3100/3100555.png' },
+  { name: 'Sushi', img: 'https://cdn-icons-png.flaticon.com/512/2252/2252258.png' },
+  { name: 'Steak', img: 'https://cdn-icons-png.flaticon.com/512/2550/2550186.png' },
+];
 
 function Home() {
-  const heroImages = [
-    '/hero1.png',
-    '/hero2.png',
-    '/hero3.png',
-  ];
-  const [heroIndex, setHeroIndex] = useState(0);
   const [recipes, setRecipes] = useState([]);
-  const [selectedRecipe, setSelectedRecipe] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [filteredRecipes, setFilteredRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [searching, setSearching] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('All');
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setHeroIndex(i => (i + 1) % heroImages.length);
-    }, 5000);
-    return () => clearInterval(timer);
+    fetchInitialRecipes();
   }, []);
 
-  useEffect(() => {
-    fetchRandomRecipes();
-  }, []);
-
-  function fetchRandomRecipes() {
+  const fetchInitialRecipes = async () => {
     setLoading(true);
-    fetch('https://api.spoonacular.com/recipes/random?number=12&apiKey=d5dc6a6d47af468fa68072cc1f0700b9')
-      .then(res => res.json())
-      .then(data => {
-        setRecipes(data.recipes || []);
-        setLoading(false);
-        toast.success('Loaded fresh recipes for you!');
-      })
-      .catch(error => {
-        setLoading(false);
-        toast.error('Failed to load recipes. Please try again.');
-        console.error('Error fetching recipes:', error);
-      });
-  }
+    try {
+      const res = await fetch(`https://api.spoonacular.com/recipes/random?number=20&apiKey=${API_KEY}`);
+      const data = await res.json();
+      setRecipes(data.recipes || []);
+      setFilteredRecipes(data.recipes || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  function fetchSearchRecipes(query) {
-    setLoading(true);
-    fetch(`https://api.spoonacular.com/recipes/complexSearch?query=${encodeURIComponent(query)}&number=12&addRecipeInformation=true&apiKey=d5dc6a6d47af468fa68072cc1f0700b9`)
-      .then(res => res.json())
-      .then(data => {
-        setRecipes(data.results || []);
-        setLoading(false);
-        if (data.results && data.results.length > 0) {
-          toast.success(`Found ${data.results.length} recipes for "${query}"`);
-        } else {
-          toast.warning(`No recipes found for "${query}". Try different keywords.`);
-        }
-      })
-      .catch(error => {
-        setLoading(false);
-        toast.error('Search failed. Please try again.');
-        console.error('Error searching recipes:', error);
-      });
-  }
-
-  function handleSearch(e) {
+  const handleSearch = async (e) => {
     e.preventDefault();
-    if (search.trim() === '') {
-      fetchRandomRecipes();
-      setSearching(false);
-      toast.info('Showing popular recipes');
-    } else {
-      fetchSearchRecipes(search);
-      setSearching(true);
-      toast.info(`Searching for "${search}"...`);
+    if (!search.trim()) return;
+    setLoading(true);
+    setActiveFilter('All');
+    try {
+      const res = await fetch(`https://api.spoonacular.com/recipes/complexSearch?query=${search}&number=20&addRecipeInformation=true&apiKey=${API_KEY}`);
+      const data = await res.json();
+      setRecipes(data.results || []);
+      setFilteredRecipes(data.results || []);
+      // Scroll to grid
+      document.querySelector('.filters-bar').scrollIntoView({ behavior: 'smooth' });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
-  function openModal(recipe) {
-    if (recipe.extendedIngredients && recipe.instructions) {
-      setSelectedRecipe(recipe);
-      setModalOpen(true);
-      setModalLoading(false);
-      toast.info(`Opening ${recipe.title}`);
-    } else {
-      setModalLoading(true);
-      setModalOpen(true);
-      toast.info('Loading recipe details...');
-      fetch(`https://api.spoonacular.com/recipes/${recipe.id}/information?apiKey=d5dc6a6d47af468fa68072cc1f0700b9`)
-        .then(res => res.json())
-        .then(data => {
-          setSelectedRecipe(data);
-          setModalLoading(false);
-          toast.success('Recipe details loaded!');
-        })
-        .catch(error => {
-          setModalLoading(false);
-          toast.error('Failed to load recipe details. Please try again.');
-          console.error('Error loading recipe:', error);
-        });
+  const filterByCategory = async (cat) => {
+    setLoading(true);
+    setSearch('');
+    setActiveFilter(cat);
+    try {
+      const res = await fetch(`https://api.spoonacular.com/recipes/complexSearch?type=${cat.toLowerCase()}&number=20&addRecipeInformation=true&apiKey=${API_KEY}`);
+      const data = await res.json();
+      setRecipes(data.results || []);
+      setFilteredRecipes(data.results || []);
+      document.querySelector('.filters-bar').scrollIntoView({ behavior: 'smooth' });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-  }
-  function closeModal() {
+  };
+
+  const applyPillFilter = (pill) => {
+    setActiveFilter(pill);
+    let filtered = [...recipes];
+    if (pill === 'Veg') filtered = recipes.filter(r => r.vegetarian);
+    if (pill === 'Healthy') filtered = recipes.filter(r => r.healthScore > 50);
+    if (pill === 'Quick') filtered = recipes.filter(r => r.readyInMinutes <= 30);
+    if (pill === 'All') filtered = recipes;
+    setFilteredRecipes(filtered);
+  };
+
+  const openModal = async (recipeId) => {
+    setModalOpen(true);
+    setModalLoading(true);
+    try {
+      const res = await fetch(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${API_KEY}`);
+      const data = await res.json();
+      setSelectedRecipe(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  const closeModal = () => {
     setModalOpen(false);
     setSelectedRecipe(null);
-    setModalLoading(false);
-  }
+  };
 
   return (
-    <>
+    <div className="page-wrapper">
       <Header />
-      <section className="hero-section">
-        <div className="hero-carousel">
-          {heroImages.map((img, i) => (
-            <img
-              key={i}
-              src={img}
-              alt="hero"
-              className={`hero-img${i === heroIndex ? ' active' : ''}`}
-            />
-          ))}
-          <div className="hero-overlay"></div>
-          <div className="hero-content">
-            <span className="hero-tagline">Find your best recipes</span>
-            <h1 className="hero-title">A Symphony of Flavors</h1>
-            <p className="hero-subtitle">
-              Discover culinary excellence with our handpicked selection of gourmet recipes.
-            </p>
-            <form className="search-bar-group" onSubmit={handleSearch}>
-              <input
-                type="text"
-                className="search-bar-input"
-                placeholder="Search recipes or ingredients..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-              />
-              <button className="search-bar-btn" type="submit">Search</button>
-            </form>
-            <div className="scroll-indicator">
-              <div className="mouse">
-                <div className="wheel"></div>
+
+      {/* LUXURY HERO */}
+      <section className="hero-wrapper">
+        <div className="main-container">
+          <div className="hero-grid">
+            <div className="hero-text">
+              <span className="hero-tag">The ultimate kitchen companion</span>
+              <h1 className="hero-title">Delicious Recipes <br />at Your Fingertips.</h1>
+              <div className="hero-search-container">
+                <form onSubmit={handleSearch} className="hero-search-bar">
+                  <input
+                    type="text"
+                    placeholder="Search for 'Spicy Pasta' or 'Vegan Bowl'..."
+                    className="hero-search-input"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                  <button type="submit" className="hero-search-btn">Search</button>
+                </form>
               </div>
-              <div className="arrows">
-                <span></span>
-                <span></span>
-              </div>
+            </div>
+            <div className="hero-image-side">
+              <img src="/hero_main.png" alt="Featured Dish" className="floating-dish" />
             </div>
           </div>
         </div>
       </section>
-      <section className="featured-recipes">
-        <div className="featured-recipes-inner">
-          <div className="section-header">
-            <h2 className="popular-heading">Popular Recipes</h2>
-            <p className="popular-desc">{searching && search ? `Results for "${search}"` : 'Handpicked recipes just for you'}</p>
+
+      {/* CATEGORIES SECTION */}
+      <section className="categories-section">
+        <div className="main-container">
+          <h2 className="section-title">What's on your mind?</h2>
+          <div className="cat-scroll-wrapper">
+            {QUICK_CATEGORIES.map((cat, i) => (
+              <div key={i} className="cat-item" onClick={() => filterByCategory(cat.name)}>
+                <div className="cat-img-box">
+                  <img src={cat.img} alt={cat.name} />
+                </div>
+                <span className="cat-name">{cat.name}</span>
+              </div>
+            ))}
           </div>
-          {loading ? (
-            <div className="loading-recipes">Loading recipes...</div>
-          ) : (
-            <div className="recipe-grid">
-              {recipes.map(recipe => (
-                <div className="recipe-card" key={recipe.id} onClick={() => openModal(recipe)}>
-                  <div className="recipe-img-wrapper">
-                    <img src={recipe.image} alt={recipe.title} className="recipe-img" />
-                    {recipe.healthScore > 70 && <span className="health-badge">Healthy Choice</span>}
+        </div>
+      </section>
+
+      {/* FILTER BAR */}
+      <div className="filters-bar">
+        <div className="main-container">
+          <div className="filter-pills">
+            {['All', 'Healthy', 'Quick', 'Veg'].map(pill => (
+              <button
+                key={pill}
+                className={`pill ${activeFilter === pill ? 'active' : ''}`}
+                onClick={() => applyPillFilter(pill)}
+              >
+                {pill}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* RECIPE GRID */}
+      <div className="main-container">
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '100px 0', fontSize: '1.5rem', fontWeight: '600', color: 'var(--text-muted)' }}>
+            Searching for culinary magic...
+          </div>
+        ) : (
+          <div className="recipe-grid">
+            {filteredRecipes.map(recipe => (
+              <div key={recipe.id} className="recipe-card" onClick={() => openModal(recipe.id)}>
+                <div className="card-img-wrapper">
+                  <img src={recipe.image} alt={recipe.title} className="card-img" />
+                  <div className="card-overlay">
+                    <span className="card-time">{recipe.readyInMinutes} MINS</span>
                   </div>
-                  <div className="recipe-info">
-                    <h3 className="recipe-title">{recipe.title}</h3>
-                    <div className="recipe-meta">
-                      <span>🕒 {recipe.readyInMinutes} min</span>
-                      <span>👥 {recipe.servings} serving</span>
-                    </div>
-                    <div className="recipe-attributes">
-                      {recipe.vegetarian && <span className="attr-tag veg">Veg</span>}
-                      {recipe.glutenFree && <span className="attr-tag gf">Gluten-Free</span>}
-                      {recipe.dairyFree && <span className="attr-tag df">Dairy-Free</span>}
-                    </div>
+                  {recipe.veryHealthy && <span className="card-badge">Healthy Choice</span>}
+                </div>
+                <div className="card-info">
+                  <h3 className="card-title">{recipe.title}</h3>
+                  <div className="card-meta">
+                    <span className="rating-star">★ {(recipe.healthScore / 20).toFixed(1)}</span>
+                    <span>•</span>
+                    <span>{recipe.servings} Servings</span>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* MODAL */}
       {modalOpen && (
-        <div className="modal-bg" onClick={closeModal}>
-          <div className="modal-box" style={{ padding: '32px 24px 32px 24px' }} onClick={e => e.stopPropagation()}>
-            <button className="modal-close" onClick={closeModal}>&times;</button>
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <button className="modal-close-btn" onClick={closeModal}>×</button>
+
             {modalLoading || !selectedRecipe ? (
-              <div className="modal-loading">Loading...</div>
+              <div style={{ padding: '100px', textAlign: 'center' }}>Loading ingredients...</div>
             ) : (
               <>
-                <img src={selectedRecipe.image} alt={selectedRecipe.title} className="modal-img" />
-                <h2 className="modal-title">{selectedRecipe.title}</h2>
-                <div className="modal-meta">
-                  <span>{selectedRecipe.readyInMinutes} min</span>
-                  <span>{selectedRecipe.servings} servings</span>
+                <div className="modal-header-img">
+                  <img src={selectedRecipe.image} alt={selectedRecipe.title} />
                 </div>
-                <div className="modal-section">
-                  <h3>Ingredients</h3>
-                  <ul className="modal-ingredients">
-                    {selectedRecipe.extendedIngredients && selectedRecipe.extendedIngredients.length > 0 ? (
-                      selectedRecipe.extendedIngredients.map((ing, idx) => (
-                        <li key={idx}>{ing.original}</li>
-                      ))
-                    ) : (
-                      <li>No ingredients available.</li>
-                    )}
-                  </ul>
-                </div>
-                <div className="modal-section">
-                  <h3>Instructions</h3>
-                  <div className="modal-instructions">
-                    {selectedRecipe.instructions ? (
-                      <p>{selectedRecipe.instructions.replace(/<[^>]+>/g, '').replace(/\d+\./g, '').replace(/\s+/g, ' ').trim()}</p>
-                    ) : selectedRecipe.analyzedInstructions && selectedRecipe.analyzedInstructions.length > 0 ? (
-                      <p>{selectedRecipe.analyzedInstructions[0].steps.map((step) => step.step).join(' ')}</p>
-                    ) : (
-                      <p>No instructions available.</p>
-                    )}
+                <div className="modal-body">
+                  <span className="modal-tag">Featured Recipe</span>
+                  <h2 className="modal-main-title">{selectedRecipe.title}</h2>
+
+                  <div className="modal-stats">
+                    <div className="stat-block">
+                      <span className="stat-label">Prep Time</span>
+                      <span className="stat-value">{selectedRecipe.readyInMinutes} Mins</span>
+                    </div>
+                    <div className="stat-block">
+                      <span className="stat-label">Servings</span>
+                      <span className="stat-value">{selectedRecipe.servings}</span>
+                    </div>
+                    <div className="stat-block">
+                      <span className="stat-label">Health Score</span>
+                      <span className="stat-value">{selectedRecipe.healthScore}%</span>
+                    </div>
+                  </div>
+
+                  <div className="modal-inner-grid">
+                    <div className="ingredients-sec">
+                      <h3 style={{ marginBottom: '20px' }}>Ingredients</h3>
+                      <ul className="ingredients-list">
+                        {selectedRecipe.extendedIngredients?.map((ing, k) => (
+                          <li key={k}>{ing.original}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="instructions-sec">
+                      <h3 style={{ marginBottom: '20px' }}>Cooking Guide</h3>
+                      <div className="instructions-text" dangerouslySetInnerHTML={{ __html: selectedRecipe.instructions }} />
+                    </div>
                   </div>
                 </div>
               </>
@@ -228,8 +257,9 @@ function Home() {
           </div>
         </div>
       )}
+
       <Footer />
-    </>
+    </div>
   );
 }
 
