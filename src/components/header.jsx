@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../style/Header.css';
 import { Drawer } from 'antd';
@@ -10,9 +10,22 @@ import { useAuth } from '../contexts/AuthContext';
 
 const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -50,15 +63,16 @@ const Header = () => {
           Contact
         </Link>
       </li>
-      <li className="user-menu" onClick={handleProfileClick} style={{cursor:'pointer'}}>
-        <span className="profile-desktop"><FaUserCircle size={26} /></span>
+      <li className="user-menu-desktop" onClick={handleProfileClick}>
+        <div className="profile-icon-wrapper">
+          <FaUserCircle size={28} />
+        </div>
       </li>
-      {/* Removed exit/logout icon from navbar per request; logout still accessible elsewhere */}
     </ul>
   );
 
   const navLinksMobile = (
-    <ul className="navbar-links">
+    <ul className="navbar-links-mobile">
       <li>
         <Link to="/home" className={location.pathname === '/home' ? 'active' : ''} onClick={() => setDrawerOpen(false)}>
           Home
@@ -79,35 +93,45 @@ const Header = () => {
           Contact
         </Link>
       </li>
-      <li className="user-menu" style={{cursor:'pointer'}}>
+      <li>
         <Link to="/profile" className={location.pathname === '/profile' ? 'active' : ''} onClick={() => setDrawerOpen(false)}>
           Profile
         </Link>
       </li>
-      <li className="logout-menu" style={{cursor:'pointer'}}>
-        <span onClick={handleLogout}>Logout</span>
+      <li className="logout-btn-mobile">
+        <button onClick={handleLogout}>Logout</button>
       </li>
     </ul>
   );
 
   return (
-    <header className="navbar">
-      <div className="appname">
-        <Link to="/home" style={{ fontSize: 32, fontWeight: 'bold', letterSpacing: 2 }}>RecipeHunt</Link>
+    <header className={`navbar ${scrolled ? 'scrolled' : ''} ${location.pathname === '/home' ? 'home-nav' : ''}`}>
+      <div className="navbar-container">
+        <div className="appname">
+          <Link to="/home">
+            <span className="logo-text">Recipe<span className="logo-accent">Hunt</span></span>
+          </Link>
+        </div>
+
+        <div className="navbar-links-desktop">{navLinks}</div>
+
+        <div className="hamburger-mobile" onClick={() => setDrawerOpen(true)}>
+          <div className={`hamburger-icon ${drawerOpen ? 'open' : ''}`}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
       </div>
-      <div className="navbar-links-desktop">{navLinks}</div>
-      <div className="hamburger-mobile" onClick={() => setDrawerOpen(true)}>
-        <MenuOutlined style={{ fontSize: 28, color: '#fff' }} />
-      </div>
+
       <Drawer
-        title={<Link to="/home" onClick={() => setDrawerOpen(false)} style={{ color: '#ff6600', fontWeight: 'bold', fontSize: 22 }}>RecipeHunt</Link>}
-        placement="left"
+        title={<div className="drawer-logo">Recipe<span>Hunt</span></div>}
+        placement="right"
         closable={true}
         onClose={() => setDrawerOpen(false)}
         open={drawerOpen}
-        bodyStyle={{ padding: 0, background: '#fff7f0' }}
-        width={260}
-        className="mobile-drawer"
+        width={300}
+        className="premium-drawer"
       >
         {navLinksMobile}
       </Drawer>

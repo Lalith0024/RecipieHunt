@@ -91,22 +91,22 @@ function Category() {
           ) : (
             <div className="recipe-grid">
               {recipes.map(recipe => (
-                <div className="recipe-card" key={recipe.id}>
-                  <img src={recipe.image} alt={recipe.title} className="recipe-img" />
+                <div className="recipe-card" key={recipe.id} onClick={() => openModal(recipe)}>
+                  <div className="recipe-img-wrapper">
+                    <img src={recipe.image} alt={recipe.title} className="recipe-img" />
+                    {recipe.healthScore > 70 && <span className="health-badge">Healthy Choice</span>}
+                  </div>
                   <div className="recipe-info">
                     <h3 className="recipe-title">{recipe.title}</h3>
                     <div className="recipe-meta">
                       <span>🕒 {recipe.readyInMinutes} min</span>
-                      <span>{recipe.servings} servings</span>
+                      <span>👥 {recipe.servings} serving</span>
                     </div>
-                    <div style={{width:'100%'}}>
-                      <button className="view-recipe-btn" style={{width:'100%'}} onClick={() => openModal(recipe)}>
-                        View Recipe
-                      </button>
+                    <div className="recipe-attributes">
+                      {recipe.vegetarian && <span className="attr-tag veg">Veg</span>}
+                      {recipe.glutenFree && <span className="attr-tag gf">Gluten-Free</span>}
+                      {recipe.dairyFree && <span className="attr-tag df">Dairy-Free</span>}
                     </div>
-                    {recipe.dishTypes && recipe.dishTypes.length > 0 && (
-                      <span className="recipe-tag">{recipe.dishTypes[0]}</span>
-                    )}
                   </div>
                 </div>
               ))}
@@ -116,7 +116,7 @@ function Category() {
       </section>
       {modalOpen && (
         <div className="modal-bg" onClick={closeModal}>
-          <div className="modal-box" style={{padding:'32px 24px 32px 24px'}} onClick={e => e.stopPropagation()}>
+          <div className="modal-box" style={{ padding: '32px 24px 32px 24px' }} onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={closeModal}>&times;</button>
             {modalLoading || !selectedRecipe ? (
               <div className="modal-loading">Loading...</div>

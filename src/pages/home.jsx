@@ -6,9 +6,9 @@ import { toast } from 'react-toastify';
 
 function Home() {
   const heroImages = [
-    'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=1200&q=80',
+    '/hero1.png',
+    '/hero2.png',
+    '/hero3.png',
   ];
   const [heroIndex, setHeroIndex] = useState(0);
   const [recipes, setRecipes] = useState([]);
@@ -111,7 +111,7 @@ function Home() {
 
   return (
     <>
-      <Header/>
+      <Header />
       <section className="hero-section">
         <div className="hero-carousel">
           {heroImages.map((img, i) => (
@@ -124,49 +124,60 @@ function Home() {
           ))}
           <div className="hero-overlay"></div>
           <div className="hero-content">
-            <h1 className="hero-title">Find Your Perfect Recipe</h1>
+            <span className="hero-tagline">Find your best recipes</span>
+            <h1 className="hero-title">A Symphony of Flavors</h1>
             <p className="hero-subtitle">
-              Search thousands of recipes by name or tag
+              Discover culinary excellence with our handpicked selection of gourmet recipes.
             </p>
+            <form className="search-bar-group" onSubmit={handleSearch}>
+              <input
+                type="text"
+                className="search-bar-input"
+                placeholder="Search recipes or ingredients..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+              />
+              <button className="search-bar-btn" type="submit">Search</button>
+            </form>
+            <div className="scroll-indicator">
+              <div className="mouse">
+                <div className="wheel"></div>
+              </div>
+              <div className="arrows">
+                <span></span>
+                <span></span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
       <section className="featured-recipes">
         <div className="featured-recipes-inner">
-          <form className="search-bar-group" onSubmit={handleSearch}>
-            <input
-              type="text"
-              className="search-bar-input"
-              data-mobile-placeholder="Search recipes"
-              placeholder="Search recipes or ingredients..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
-            <button className="search-bar-btn" type="submit">Search</button>
-          </form>
-          <h2 className="popular-heading">Popular Recipes</h2>
-          <p className="popular-desc">{searching && search ? `Results for "${search}"` : 'Handpicked recipes just for you'}</p>
+          <div className="section-header">
+            <h2 className="popular-heading">Popular Recipes</h2>
+            <p className="popular-desc">{searching && search ? `Results for "${search}"` : 'Handpicked recipes just for you'}</p>
+          </div>
           {loading ? (
             <div className="loading-recipes">Loading recipes...</div>
           ) : (
             <div className="recipe-grid">
               {recipes.map(recipe => (
-                <div className="recipe-card" key={recipe.id}>
-                  <img src={recipe.image} alt={recipe.title} className="recipe-img" />
+                <div className="recipe-card" key={recipe.id} onClick={() => openModal(recipe)}>
+                  <div className="recipe-img-wrapper">
+                    <img src={recipe.image} alt={recipe.title} className="recipe-img" />
+                    {recipe.healthScore > 70 && <span className="health-badge">Healthy Choice</span>}
+                  </div>
                   <div className="recipe-info">
                     <h3 className="recipe-title">{recipe.title}</h3>
                     <div className="recipe-meta">
                       <span>🕒 {recipe.readyInMinutes} min</span>
-                      <span>{recipe.servings} servings</span>
+                      <span>👥 {recipe.servings} serving</span>
                     </div>
-                    <div style={{width:'100%'}}>
-                      <button className="view-recipe-btn" style={{width:'100%'}} onClick={() => openModal(recipe)}>
-                        View Recipe
-                      </button>
+                    <div className="recipe-attributes">
+                      {recipe.vegetarian && <span className="attr-tag veg">Veg</span>}
+                      {recipe.glutenFree && <span className="attr-tag gf">Gluten-Free</span>}
+                      {recipe.dairyFree && <span className="attr-tag df">Dairy-Free</span>}
                     </div>
-                    {recipe.dishTypes && recipe.dishTypes.length > 0 && (
-                      <span className="recipe-tag">{recipe.dishTypes[0]}</span>
-                    )}
                   </div>
                 </div>
               ))}
@@ -176,7 +187,7 @@ function Home() {
       </section>
       {modalOpen && (
         <div className="modal-bg" onClick={closeModal}>
-          <div className="modal-box" style={{padding:'32px 24px 32px 24px'}} onClick={e => e.stopPropagation()}>
+          <div className="modal-box" style={{ padding: '32px 24px 32px 24px' }} onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={closeModal}>&times;</button>
             {modalLoading || !selectedRecipe ? (
               <div className="modal-loading">Loading...</div>
@@ -217,7 +228,7 @@ function Home() {
           </div>
         </div>
       )}
-      <Footer/>
+      <Footer />
     </>
   );
 }
