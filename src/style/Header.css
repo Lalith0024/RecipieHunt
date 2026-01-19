@@ -29,8 +29,9 @@
   text-decoration: none;
   font-size: 1.05rem;
   font-weight: 600;
-  padding: 8px 12px;
-  transition: all 0.2s;
+  padding: 10px 12px;
+  border-radius: 999px;
+  transition: background-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
   position: relative;
   letter-spacing: 0.02em;
   background: none;
@@ -38,33 +39,36 @@
 .navbar-links a:hover,
 .navbar-links a.active {
   color: #fff;
-  letter-spacing: 0.04em;
-  background: none;
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
 }
 .navbar-links a::after {
   content: '';
   position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0;
+  left: 12px;
+  right: 12px;
+  bottom: 6px;
+  width: auto;
   height: 2px;
   background: #fff;
   border-radius: 2px;
-  transition: all 0.2s;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.18s ease;
   pointer-events: none;
 }
 .navbar-links a:hover::after,
 .navbar-links a.active::after {
-  width: 100%;
+  transform: scaleX(1);
 }
 .navbar-links a:not(:hover):not(.active)::after {
-  transition: none;
+  transition: transform 0.18s ease;
 }
 .navbar-links a.active {
   font-weight: 800;
 }
 .navbar-links a.active::after {
-  width: 100%;
+  transform: scaleX(1);
 }
 .profile-desktop {
   display: inline;
@@ -80,11 +84,7 @@
     display: none;
   }
 }
-.navbar-links a.active {
-  font-weight: 700;
-  color: #fff;
-  background: none;
-}
+/* removed duplicate .navbar-links a.active block (handled above) */
 .navbar-links a:focus {
   outline: 2px solid #ff7043;
   outline-offset: 2px;
@@ -179,6 +179,9 @@
   transition: all 0.2s;
   position: relative;
 }
+.mobile-drawer .navbar-links a:hover {
+  background: rgba(255, 102, 0, 0.08);
+}
 .mobile-drawer .navbar-links a.active::before {
   content: '';
   position: absolute;
@@ -210,6 +213,6 @@
   transition: all 0.2s;
 }
 .mobile-drawer .user-menu:hover {
-  background: none;
+  background: rgba(255, 102, 0, 0.08);
 }
 

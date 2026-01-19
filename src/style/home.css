@@ -19,51 +19,10 @@ body {
   flex-direction: column;
 }
 
-.navbar {
-  margin-bottom: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 20px;
-  background-color: #ff6600;
-}
-
-.appname {
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.navbar-links {
-  display: flex;
-  gap: 20px;
-  padding: 10px;
-  color: white;
-  font-weight: bold;
-  list-style-type: none;
-  margin: 0;
-}
-
-.navbar-links li {
-  display: inline-block;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: background-color 0.3s ease;
-}
-
-.navbar-links li:hover {
-  background-color: #e65400;
-  color: white;
-  cursor: pointer;
-}
-
-.navbar-links li button {
-  background-color: transparent;
-  border: none;
-  color: inherit;
-  font-size: inherit;
-  cursor: pointer;
-}
+/* NOTE:
+  Navbar styles live in src/style/Header.css.
+  Keeping navbar CSS in this file caused cross-page overrides and inconsistent hover/active behavior.
+*/
 
 .recipes-scroll {
   display: flex;
@@ -877,6 +836,14 @@ body {
   margin-bottom: 18px;
   text-align: center;
 }
+.category-subtitle {
+  margin: -8px auto 22px auto;
+  max-width: 720px;
+  text-align: center;
+  color: #666;
+  font-size: 1.02rem;
+  line-height: 1.55;
+}
 .category-filter-group {
   display: flex;
   align-items: center;
@@ -896,6 +863,13 @@ body {
   border: 1px solid #ddd;
   background: #fff;
   color: #222;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+.category-select:focus {
+  outline: none;
+  border-color: rgba(255, 102, 0, 0.45);
+  box-shadow: 0 6px 20px rgba(255,102,0,0.12), 0 2px 10px rgba(0,0,0,0.06);
 }
 .category-ingredients {
   margin-top: 10px;
@@ -915,6 +889,10 @@ body {
   .category-title {
     font-size: 1.2rem;
     margin-bottom: 10px;
+  }
+  .category-subtitle {
+    font-size: 0.92rem;
+    margin: -6px auto 14px auto;
   }
   .category-filter-group {
     flex-direction: column;

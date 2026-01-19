@@ -70,6 +70,9 @@ function Category() {
       <section className="category-section">
         <div className="category-container">
           <h1 className="category-title">Browse by Category</h1>
+          <p className="category-subtitle">
+            Pick a vibe and discover recipes that match your mood.
+          </p>
           <div className="category-filter-group">
             <label htmlFor="category-select" className="category-label">Category:</label>
             <select
