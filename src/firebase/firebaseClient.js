@@ -17,15 +17,25 @@ const firebaseConfig = {
   measurementId: env.VITE_FIREBASE_MEASUREMENT_ID || env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
+const isValidConfig = Boolean(
+  firebaseConfig.apiKey && firebaseConfig.authDomain && firebaseConfig.projectId && firebaseConfig.appId
+);
+
 // Initialize (singleton-safe)
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+let app;
+let auth = null;
+let db = null;
+let storage = null;
 
-const auth = getAuth(app);
-// Set local persistence for production-ready behavior
-setPersistence(auth, browserLocalPersistence).catch(() => {});
-
-const db = getFirestore(app);
-const storage = getStorage(app);
+if (isValidConfig) {
+  app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  setPersistence(auth, browserLocalPersistence).catch(() => {});
+  db = getFirestore(app);
+  storage = getStorage(app);
+} else {
+  console.warn('[Firebase] Missing or invalid environment variables. Set VITE_FIREBASE_* (for Vite) or REACT_APP_FIREBASE_* (for CRA). App will run without Firebase.');
+}
 
 export { app, auth, db, storage };
 

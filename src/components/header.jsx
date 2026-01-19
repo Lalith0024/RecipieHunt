@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../style/Header.css';
 import { Drawer } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
-import { FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
+import { FaUserCircle } from 'react-icons/fa';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
@@ -53,9 +53,7 @@ const Header = () => {
       <li className="user-menu" onClick={handleProfileClick} style={{cursor:'pointer'}}>
         <span className="profile-desktop"><FaUserCircle size={26} /></span>
       </li>
-      <li className="logout-menu" onClick={handleLogout} style={{cursor:'pointer'}}>
-        <span className="logout-desktop"><FaSignOutAlt size={20} /></span>
-      </li>
+      {/* Removed exit/logout icon from navbar per request; logout still accessible elsewhere */}
     </ul>
   );
 
