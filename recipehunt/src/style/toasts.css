@@ -1,0 +1,82 @@
+/* Luxury Minimalist Toasts - Premium White Theme */
+:root {
+  --toastify-color-success: #10b981;
+  --toastify-color-error: #ff5252;
+  --toastify-border-radius: 16px;
+  --toastify-font-family: 'Outfit', sans-serif;
+}
+
+.Toastify__toast {
+  background: #ffffff !important;
+  color: #282c3f !important;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  padding: 14px 22px;
+  font-weight: 500;
+  min-height: 64px;
+}
+
+/* Success Toast Decoration */
+.Toastify__toast--success {
+  border-left: 5px solid #10b981;
+}
+
+.Toastify__toast--success .Toastify__toast-icon svg {
+  fill: #fff !important;
+}
+
+.Toastify__toast--success .Toastify__toast-icon {
+  background: #10b981;
+  border-radius: 50%;
+  padding: 5px;
+  width: 20px;
+  height: 20px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Error Toast Decoration */
+.Toastify__toast--error {
+  border-left: 5px solid #ff5252;
+}
+
+.Toastify__toast--error .Toastify__toast-icon svg {
+  fill: #fff !important;
+}
+
+.Toastify__toast--error .Toastify__toast-icon {
+  background: #ff5252;
+  border-radius: 50%;
+  padding: 5px;
+  width: 20px;
+  height: 20px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.Toastify__toast-body {
+  margin-left: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #282c3f;
+}
+
+.Toastify__close-button {
+  color: #282c3f;
+  opacity: 0.5;
+  align-self: center;
+}
+
+.Toastify__progress-bar {
+  height: 3px;
+}
+
+.Toastify__progress-bar--success {
+  background: #10b981;
+}
+
+.Toastify__progress-bar--error {
+  background: #ff5252;
+}
