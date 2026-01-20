@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../style/Contact.css';
-import BackgroundImage from '../../images/ChatGPT Image Jun 16, 2025, 03_32_27 PM.png';
 import Header from '../components/header.jsx';
 import Footer from '../components/footer.jsx';
+import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
+import { FaEnvelope, FaPaperPlane, FaUtensils, FaArrowRight } from 'react-icons/fa';
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -11,7 +12,11 @@ function Contact() {
     email: '',
     message: ''
   });
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState('idle');
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -22,69 +27,136 @@ function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      toast.success('Message sent successfully! We\'ll get back to you soon.');
+    setStatus('sending');
+
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setStatus('success');
+      toast.success('Your recipe/message is being routed to the team!');
       setFormData({ name: '', email: '', message: '' });
-    }, 1500);
+      setTimeout(() => setStatus('idle'), 3000);
+    } catch (err) {
+      toast.error('Something went wrong. Please try again.');
+      setStatus('idle');
+    }
   };
+
   return (
-    <>
-    <Header/>
-      <div className="fade-in">
-        <section
-          className="contact-container"
-          style={{
-            backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url(${BackgroundImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        >
-          <div className="contact-wrapper">
-            <h2 className="contact-title">Get in Touch</h2>
-            <p className="contact-subtitle">We'd love to hear from you! Send us a message.</p>
-            <form
-              className="contact-form"
-              onSubmit={handleSubmit}
+    <div className="page-wrapper" style={{ background: '#fff', overflow: 'hidden' }}>
+      <Header />
+
+      <main className="contact-luxury-canvas">
+        <div className="blob-bg-container">
+          <div className="blob blob-1"></div>
+          <div className="blob blob-2"></div>
+        </div>
+
+        <div className="main-container">
+          <div className="contact-symmetry-wrapper">
+
+            {/* LEFT SIDE - IMAGE CARD */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+              className="contact-card image-card"
             >
-              <input
-                type="text"
-                name="name"
-                placeholder="Your Name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
+              <img
+                src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=1000"
+                alt="Contact Support"
+                className="full-card-img"
               />
-              <input
-                type="email"
-                name="email"
-                placeholder="Your Email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-              />
-              <textarea
-                name="message"
-                rows="6"
-                placeholder="Your Message"
-                value={formData.message}
-                onChange={handleInputChange}
-                required
-              ></textarea>
-              <button type="submit" disabled={loading}>
-                {loading ? 'Sending...' : 'Send Message'}
-              </button>
-            </form>
+              <div className="image-card-overlay">
+                <div className="support-badge-premium">
+                  <FaUtensils className="b-icon" />
+                  <div className="b-text">
+                    <span>Support Online</span>
+                    <strong>We are here to help.</strong>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* RIGHT SIDE - FORM CARD */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="contact-card form-card"
+            >
+              <div className="box-header-premium">
+                <h1 className="display-title-accent">Get in <span className="highlight">Touch</span></h1>
+                <p>Send your queries through the form below.</p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="premium-compact-form">
+                <div className="form-field">
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder=" "
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    id="name"
+                  />
+                  <label htmlFor="name">Your Name</label>
+                </div>
+
+                <div className="form-field">
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder=" "
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    id="email"
+                  />
+                  <label htmlFor="email">Your Email</label>
+                </div>
+
+                <div className="form-field">
+                  <textarea
+                    name="message"
+                    rows="4"
+                    placeholder=" "
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    required
+                    id="msg"
+                  ></textarea>
+                  <label htmlFor="msg">Your Message</label>
+                </div>
+
+                <button
+                  type="submit"
+                  className={`glow-submit-btn-new ${status}`}
+                  disabled={status !== 'idle'}
+                >
+                  {status === 'idle' && (
+                    <>
+                      <span>Send Message</span>
+                      <FaArrowRight />
+                    </>
+                  )}
+                  {status === 'sending' && <span>Processing...</span>}
+                  {status === 'success' && <span>Message Sent!</span>}
+                </button>
+              </form>
+
+              <div className="footer-contact-info">
+                <FaEnvelope className="f-icon-small" />
+                <span>support@recipehunt.com</span>
+              </div>
+            </motion.div>
+
           </div>
-          <div className="floating-food">🍝</div>
-        </section>
-      </div>
-      <Footer/>
-    </>
-    
+        </div>
+      </main>
+
+      <Footer />
+    </div>
   );
 }
 

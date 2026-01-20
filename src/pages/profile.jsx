@@ -4,24 +4,22 @@ import { toast } from 'react-toastify';
 import Header from '../components/header.jsx';
 import Footer from '../components/footer.jsx';
 import '../style/profile.css';
-import { signOut } from 'firebase/auth';
-import { auth } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 
 function Profile() {
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
+  const { user, logout } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
   const [profile, setProfile] = useState({
-    name: currentUser?.displayName || 'User',
-    email: currentUser?.email || 'user@example.com',
+    name: user?.displayName || 'User',
+    email: user?.email || 'user@example.com',
     address: 'Hyderabad, India',
   });
   const [editProfile, setEditProfile] = useState(profile);
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      await logout();
       toast.success('Logged out successfully! See you soon!');
       navigate('/');
     } catch (error) {
@@ -51,17 +49,17 @@ function Profile() {
 
   return (
     <>
-      <Header/>
+      <Header />
       <div className="profile-unique-bg">
         <svg className="profile-abstract-bg" width="100%" height="100%" viewBox="0 0 1440 320" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill="#ff7043" fillOpacity="0.08" d="M0,160L60,170.7C120,181,240,203,360,197.3C480,192,600,160,720,133.3C840,107,960,85,1080,101.3C1200,117,1320,171,1380,197.3L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"/>
+          <path fill="#ff7043" fillOpacity="0.08" d="M0,160L60,170.7C120,181,240,203,360,197.3C480,192,600,160,720,133.3C840,107,960,85,1080,101.3C1200,117,1320,171,1380,197.3L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z" />
         </svg>
         <svg className="profile-floating-accent" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="60" cy="60" rx="60" ry="60" fill="url(#paint0_radial)"/>
+          <ellipse cx="60" cy="60" rx="60" ry="60" fill="url(#paint0_radial)" />
           <defs>
             <radialGradient id="paint0_radial" cx="0.5" cy="0.5" r="0.5" fx="0.5" fy="0.5" gradientTransform="translate(60 60) scale(60)">
-              <stop stopColor="#ff7043" stopOpacity="0.5"/>
-              <stop offset="1" stopColor="#ffeede" stopOpacity="0.1"/>
+              <stop stopColor="#ff7043" stopOpacity="0.5" />
+              <stop offset="1" stopColor="#ffeede" stopOpacity="0.1" />
             </radialGradient>
           </defs>
         </svg>
@@ -69,11 +67,11 @@ function Profile() {
           <div className="profile-unique-avatar-col">
             <div className="profile-unique-avatar-glow">
               <div className="profile-unique-avatar">
-                <svg width="110" height="110" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="30" fill="#fff"/><circle cx="30" cy="24" r="13" fill="#ff7043"/><ellipse cx="30" cy="46" rx="18" ry="10" fill="#f5f5f5"/></svg>
+                <svg width="110" height="110" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="30" fill="#fff" /><circle cx="30" cy="24" r="13" fill="#ff7043" /><ellipse cx="30" cy="46" rx="18" ry="10" fill="#f5f5f5" /></svg>
               </div>
             </div>
             <button className="profile-unique-back" onClick={handleBack} aria-label="Go back">
-              <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke="#ff7043" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke="#ff7043" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
             </button>
           </div>
           <div className="profile-unique-info-col">
@@ -81,14 +79,14 @@ function Profile() {
             <div className="profile-unique-info-list">
               <div className="profile-unique-info">
                 <span className="profile-unique-icon" aria-label="Email">
-                  <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><path d="M4 4h16v16H4z" fill="#fff"/><path d="M4 4l8 8 8-8" stroke="#ff7043" strokeWidth="2"/></svg>
+                  <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><path d="M4 4h16v16H4z" fill="#fff" /><path d="M4 4l8 8 8-8" stroke="#ff7043" strokeWidth="2" /></svg>
                 </span>
                 <span className="profile-unique-label">Email</span>
                 <span className="profile-unique-value">{profile.email}</span>
               </div>
               <div className="profile-unique-info">
                 <span className="profile-unique-icon" aria-label="Address">
-                  <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="10" r="3.5" stroke="#ff7043" strokeWidth="2"/><path d="M12 21c-4.5-4.5-7-7.5-7-10.5A7 7 0 0112 3a7 7 0 017 7.5c0 3-2.5 6-7 10.5z" stroke="#ff7043" strokeWidth="2"/></svg>
+                  <svg width="20" height="20" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="10" r="3.5" stroke="#ff7043" strokeWidth="2" /><path d="M12 21c-4.5-4.5-7-7.5-7-10.5A7 7 0 0112 3a7 7 0 017 7.5c0 3-2.5 6-7 10.5z" stroke="#ff7043" strokeWidth="2" /></svg>
                 </span>
                 <span className="profile-unique-label">Address</span>
                 <span className="profile-unique-value">{profile.address}</span>
@@ -121,7 +119,7 @@ function Profile() {
           </div>
         )}
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 }
