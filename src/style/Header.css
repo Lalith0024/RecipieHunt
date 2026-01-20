@@ -85,19 +85,137 @@
   transform: translateY(-2px);
 }
 
-/* Mobile Adjustments */
+/* Mobile Adjustments & Premium Drawer */
 .hamburger-mobile {
   display: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.hamburger-icon-clean {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hamburger-icon-clean span {
+  display: block;
+  width: 28px;
+  height: 3px;
+  background-color: var(--header-text);
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
 
 @media (max-width: 900px) {
-  .navbar-links {
+  .navbar-links-desktop {
     display: none;
   }
 
   .hamburger-mobile {
     display: block;
-    font-size: 1.5rem;
-    cursor: pointer;
   }
+}
+
+/* --- PREMIUM DRAWER STYLING (MATCHING IMAGE) --- */
+.premium-brand-drawer .ant-drawer-content {
+  background-color: #fff !important;
+}
+
+.drawer-header-new {
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.drawer-close {
+  font-size: 1.2rem;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.drawer-close:hover {
+  color: var(--header-accent);
+}
+
+.drawer-logo-text {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--header-accent);
+  letter-spacing: -0.5px;
+}
+
+.drawer-logo-text .orange {
+  color: var(--header-accent);
+}
+
+.drawer-content-new {
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 80px);
+}
+
+.drawer-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.drawer-nav-list li {
+  border-bottom: 1px solid #f9f9f9;
+}
+
+.drawer-nav-list li a {
+  display: block;
+  padding: 20px 25px;
+  text-decoration: none;
+  color: var(--header-text);
+  font-weight: 700;
+  font-size: 1.05rem;
+  transition: all 0.2s;
+  position: relative;
+}
+
+/* Active Highlight like in the user's image */
+.drawer-nav-list li a.d-active {
+  color: var(--header-accent);
+  background-color: rgba(252, 128, 25, 0.05);
+}
+
+.drawer-nav-list li a.d-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 30px;
+  background-color: var(--header-accent);
+  border-radius: 0 4px 4px 0;
+}
+
+.drawer-footer-auth {
+  margin-top: auto;
+  padding: 30px 25px;
+}
+
+.drawer-logout-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #f5f5f5;
+  color: #ff4d4f;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.drawer-logout-btn:hover {
+  background-color: #ffefef;
+  transform: translateY(-2px);
 }

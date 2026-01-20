@@ -46,118 +46,108 @@ function Contact() {
       <Header />
 
       <main className="contact-luxury-canvas">
-        {/* ANIMATED BACKGROUND BLOB */}
         <div className="blob-bg-container">
           <div className="blob blob-1"></div>
           <div className="blob blob-2"></div>
         </div>
 
         <div className="main-container">
-          <div className="luxury-contact-flex">
+          <div className="contact-symmetry-wrapper">
 
-            {/* VISUAL SIDE - Left */}
+            {/* LEFT SIDE - IMAGE CARD */}
             <motion.div
-              initial={{ opacity: 0, x: -60 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
-              className="contact-visual-side"
+              className="contact-card image-card"
             >
-              <div className="image-stack-contact">
-                <img
-                  src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=800"
-                  alt="Cooking together"
-                  className="main-contact-img"
-                />
-                <div className="support-badge-float">
-                  <div className="badge-icon"><FaUtensils /></div>
-                  <div className="badge-text">
-                    <span>Active Support</span>
-                    <strong>24/7 Response</strong>
+              <img
+                src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=1000"
+                alt="Contact Support"
+                className="full-card-img"
+              />
+              <div className="image-card-overlay">
+                <div className="support-badge-premium">
+                  <FaUtensils className="b-icon" />
+                  <div className="b-text">
+                    <span>Support Online</span>
+                    <strong>We are here to help.</strong>
                   </div>
-                </div>
-              </div>
-
-              <div className="contact-text-brief">
-                <h1 className="ultra-display">Have some <br />concerns?</h1>
-                <p className="narrative-p">
-                  We're here to help you with anything you need.
-                  Drop us a message and our team will get back to you.
-                </p>
-                <div className="direct-mail-row">
-                  <FaEnvelope className="m-icon" />
-                  <strong>support@recipehunt.com</strong>
                 </div>
               </div>
             </motion.div>
 
-            {/* FORM SIDE - Right */}
+            {/* RIGHT SIDE - FORM CARD */}
             <motion.div
-              initial={{ opacity: 0, y: 100 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.2 }}
-              className="glass-form-container"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="contact-card form-card"
             >
-              <div className="contact-glass-box">
-                <div className="box-header">
-                  <h2>Get in Touch</h2>
-                  <p>Send your queries through the form below.</p>
+              <div className="box-header-premium">
+                <h1 className="display-title-accent">Get in <span className="highlight">Touch</span></h1>
+                <p>Send your queries through the form below.</p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="premium-compact-form">
+                <div className="form-field">
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder=" "
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    id="name"
+                  />
+                  <label htmlFor="name">Your Name</label>
                 </div>
 
-                <form onSubmit={handleSubmit} className="premium-compact-form">
-                  <div className="form-field">
-                    <input
-                      type="text"
-                      name="name"
-                      placeholder=" "
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      id="name"
-                    />
-                    <label htmlFor="name">Your Name</label>
-                  </div>
+                <div className="form-field">
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder=" "
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    id="email"
+                  />
+                  <label htmlFor="email">Your Email</label>
+                </div>
 
-                  <div className="form-field">
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder=" "
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      id="email"
-                    />
-                    <label htmlFor="email">Your Email</label>
-                  </div>
+                <div className="form-field">
+                  <textarea
+                    name="message"
+                    rows="4"
+                    placeholder=" "
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    required
+                    id="msg"
+                  ></textarea>
+                  <label htmlFor="msg">Your Message</label>
+                </div>
 
-                  <div className="form-field">
-                    <textarea
-                      name="message"
-                      rows="4"
-                      placeholder=" "
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      required
-                      id="msg"
-                    ></textarea>
-                    <label htmlFor="msg">Your Message</label>
-                  </div>
+                <button
+                  type="submit"
+                  className={`glow-submit-btn-new ${status}`}
+                  disabled={status !== 'idle'}
+                >
+                  {status === 'idle' && (
+                    <>
+                      <span>Send Message</span>
+                      <FaArrowRight />
+                    </>
+                  )}
+                  {status === 'sending' && <span>Processing...</span>}
+                  {status === 'success' && <span>Message Sent!</span>}
+                </button>
+              </form>
 
-                  <button
-                    type="submit"
-                    className={`glow-submit-btn ${status}`}
-                    disabled={status !== 'idle'}
-                  >
-                    {status === 'idle' && (
-                      <>
-                        <span>Send Message</span>
-                        <FaArrowRight />
-                      </>
-                    )}
-                    {status === 'sending' && <span>Routing...</span>}
-                    {status === 'success' && <span>Sent!</span>}
-                  </button>
-                </form>
+              <div className="footer-contact-info">
+                <FaEnvelope className="f-icon-small" />
+                <span>support@recipehunt.com</span>
               </div>
             </motion.div>
 

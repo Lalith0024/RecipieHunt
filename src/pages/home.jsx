@@ -92,7 +92,7 @@ function Home() {
           <div className="hero-grid">
             <div className="hero-text">
               <span className="hero-tag">The ultimate kitchen companion</span>
-              <h1 className="hero-title">Delicious Recipes <br />at Your Fingertips.</h1>
+              <h1 className="hero-title">Delicious Recipes <span>at Your Fingertips.</span></h1>
               <div className="hero-search-container">
                 <form onSubmit={handleSearch} className="hero-search-bar">
                   <input

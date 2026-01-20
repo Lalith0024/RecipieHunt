@@ -107,10 +107,28 @@
     margin: 0;
   }
 
-  .footer-links-list,
-  .social-icons {
-    align-items: center;
+  .footer-links-list {
+    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
+    gap: 20px;
+    margin-top: 10px;
+  }
+
+  .footer-links-list a {
+    font-size: 13px;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding-right: 20px;
+  }
+
+  .footer-links-list a:last-child {
+    border-right: none;
+    padding-right: 0;
+  }
+
+  .social-icons {
+    justify-content: center;
+    gap: 20px;
   }
 
   .footer-bottom {

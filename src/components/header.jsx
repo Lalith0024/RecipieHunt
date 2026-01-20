@@ -116,7 +116,7 @@ const Header = () => {
         <div className="navbar-links-desktop">{navLinks}</div>
 
         <div className="hamburger-mobile" onClick={() => setDrawerOpen(true)}>
-          <div className={`hamburger-icon ${drawerOpen ? 'open' : ''}`}>
+          <div className="hamburger-icon-clean">
             <span></span>
             <span></span>
             <span></span>
@@ -125,15 +125,54 @@ const Header = () => {
       </div>
 
       <Drawer
-        title={<div className="drawer-logo">Recipe<span>Hunt</span></div>}
-        placement="right"
-        closable={true}
+        placement="left"
+        closable={false}
         onClose={() => setDrawerOpen(false)}
         open={drawerOpen}
-        width={300}
-        className="premium-drawer"
+        width={280}
+        className="premium-brand-drawer"
+        styles={{ body: { padding: 0 } }}
       >
-        {navLinksMobile}
+        <div className="drawer-header-new">
+          <span className="drawer-close" onClick={() => setDrawerOpen(false)}>✕</span>
+          <span className="drawer-logo-text">Recipe<span className="orange">Hunt</span></span>
+        </div>
+
+        <div className="drawer-content-new">
+          <ul className="drawer-nav-list">
+            <li>
+              <Link to="/home" className={location.pathname === '/home' ? 'd-active' : ''} onClick={() => setDrawerOpen(false)}>
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link to="/categories" className={location.pathname === '/categories' ? 'd-active' : ''} onClick={() => setDrawerOpen(false)}>
+                Categories
+              </Link>
+            </li>
+            <li>
+              <Link to="/about" className={location.pathname === '/about' ? 'd-active' : ''} onClick={() => setDrawerOpen(false)}>
+                About
+              </Link>
+            </li>
+            <li>
+              <Link to="/contact" className={location.pathname === '/contact' ? 'd-active' : ''} onClick={() => setDrawerOpen(false)}>
+                Contact
+              </Link>
+            </li>
+            <li className="profile-drawer-item">
+              <Link to="/profile" className={location.pathname === '/profile' ? 'd-active' : ''} onClick={() => setDrawerOpen(false)}>
+                Profile
+              </Link>
+            </li>
+          </ul>
+
+          <div className="drawer-footer-auth">
+            <button className="drawer-logout-btn" onClick={() => { handleLogout(); setDrawerOpen(false); }}>
+              Logout
+            </button>
+          </div>
+        </div>
       </Drawer>
     </header>
   );

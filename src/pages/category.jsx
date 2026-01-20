@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import '../style/home.css';
+import '../style/category.css';
 import Header from '../components/header.jsx';
 import Footer from '../components/footer.jsx';
 
 const API_KEY = 'd5dc6a6d47af468fa68072cc1f0700b9';
 
 const CATEGORIES = [
-  { name: 'Pizza', img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=300' },
-  { name: 'Burger', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=300' },
-  { name: 'Pasta', img: 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?auto=format&fit=crop&q=80&w=300' },
-  { name: 'Appetizer', img: 'https://images.unsplash.com/photo-1541014741259-df529411b96a?auto=format&fit=crop&q=80&w=300' },
-  { name: 'Salad', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=300' },
-  { name: 'Dessert', img: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&q=80&w=300' },
-  { name: 'Beverage', img: 'https://images.unsplash.com/photo-1544145945-f904253d0c7b?auto=format&fit=crop&q=80&w=300' },
-  { name: 'Soup', img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&q=80&w=300' },
+  { name: 'Pizza', img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=500' },
+  { name: 'Burger', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=500' },
+  { name: 'Pasta', img: 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?auto=format&fit=crop&q=80&w=500' },
+  { name: 'Appetizer', img: 'https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&q=80&w=500' },
+  { name: 'Salad', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=500' },
+  { name: 'Dessert', img: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&q=80&w=500' },
+  { name: 'Beverage', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=500' },
+  { name: 'Soup', img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&q=80&w=500' },
 ];
 
 const TIME_FILTERS = [
@@ -78,18 +78,17 @@ function Category() {
     <div className="page-wrapper">
       <Header />
 
-      <div style={{ marginTop: '100px' }}>
-        <section className="categories-section">
+      <main className="category-page-content">
+        <section className="category-hero-header">
           <div className="main-container">
-            <h1 className="hero-title" style={{ color: 'var(--text-main)', fontSize: '3.5rem', marginBottom: '10px' }}>Culinary Categories</h1>
-            <p style={{ color: 'var(--text-secondary)', marginBottom: '40px', fontSize: '1.2rem' }}>Discover the perfect recipe for every mood and occasion.</p>
+            <h1 className="cat-page-title">Culinary Categories</h1>
+            <p className="cat-page-subtitle">Discover the perfect recipe for every mood, taste, and occasion.</p>
 
-            {/* Search Bar on Category Page */}
-            <div className="hero-search-container" style={{ maxWidth: '800px', margin: '0 0 50px 0' }}>
-              <div className="hero-search-bar" style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.08)', border: '1px solid var(--border-light)' }}>
+            <div className="category-search-wrapper">
+              <div className="category-search-box">
                 <input
                   type="text"
-                  placeholder="What are you craving today?"
+                  placeholder="Search for your favorite flavors..."
                   className="hero-search-input"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -97,14 +96,18 @@ function Category() {
                 <button className="hero-search-btn">Search</button>
               </div>
             </div>
+          </div>
+        </section>
 
+        <section className="category-filter-section">
+          <div className="main-container">
             <div className="cat-scroll-wrapper">
               <div
                 className={`cat-item ${category === '' ? 'active' : ''}`}
                 onClick={() => setCategory('')}
               >
-                <div className="cat-img-box" style={category === '' ? { background: 'var(--primary)' } : {}}>
-                  <div style={{ fontSize: '1.1rem', fontWeight: '800', color: category === '' ? 'white' : 'var(--text-muted)' }}>ALL</div>
+                <div className="cat-img-box">
+                  <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=500" alt="All Food" />
                 </div>
                 <span className="cat-name">Discover All</span>
               </div>
@@ -118,10 +121,9 @@ function Category() {
               ))}
             </div>
 
-            {/* Advanced Filters */}
-            <div className="filter-pills" style={{ marginTop: '40px', flexWrap: 'wrap' }}>
-              <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-                <span style={{ fontWeight: '700', color: 'var(--text-main)', fontSize: '0.9rem' }}>READY WITHIN:</span>
+            <div className="advanced-filters-row">
+              <div className="filter-group">
+                <span className="filter-label">Ready Within:</span>
                 {TIME_FILTERS.map(tf => (
                   <button
                     key={tf.value}
@@ -133,15 +135,14 @@ function Category() {
                 ))}
               </div>
 
-              <div style={{ width: '2px', height: '24px', background: 'var(--border-light)', margin: '0 10px' }}></div>
+              <div className="active-separator"></div>
 
-              <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+              <div className="filter-group">
                 <button
                   className={`pill ${vegOnly ? 'active' : ''}`}
                   onClick={() => setVegOnly(!vegOnly)}
-                  style={vegOnly ? { borderColor: '#48c479', color: '#48c479', background: 'rgba(72, 196, 121, 0.05)' } : {}}
                 >
-                  {vegOnly ? '✓ Vegetarian Only' : 'Vegetarian Only'}
+                  {vegOnly ? '✓ Vegetarian' : 'Vegetarian Only'}
                 </button>
               </div>
             </div>
@@ -185,7 +186,7 @@ function Category() {
             </>
           )}
         </div>
-      </div>
+      </main>
 
       {modalOpen && (
         <div className="modal-overlay" onClick={() => setModalOpen(false)}>
