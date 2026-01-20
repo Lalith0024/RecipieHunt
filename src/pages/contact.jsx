@@ -3,16 +3,15 @@ import '../style/Contact.css';
 import Header from '../components/header.jsx';
 import Footer from '../components/footer.jsx';
 import { toast } from 'react-toastify';
-import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaPaperPlane } from 'react-icons/fa';
+import { FaEnvelope, FaPaperPlane, FaUtensils } from 'react-icons/fa';
 
 function Contact() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    subject: '',
     message: ''
   });
-  const [status, setStatus] = useState('idle'); // idle, sending, success
+  const [status, setStatus] = useState('idle');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -29,141 +28,105 @@ function Contact() {
     e.preventDefault();
     setStatus('sending');
 
-    // Simulate real mail sending logic (Nodemailer style)
-    // In a real app, this would be an axios.post('/api/contact', formData)
     try {
+      // Logic for Mail
       await new Promise(resolve => setTimeout(resolve, 2000));
       setStatus('success');
-      toast.success('Your message has been delivered to our culinary team!');
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      toast.success('Thanks for reaching out! We will reply soon.');
+      setFormData({ name: '', email: '', message: '' });
 
       setTimeout(() => setStatus('idle'), 3000);
     } catch (err) {
-      toast.error('Failed to send message. Please try again.');
+      toast.error('Something went wrong. Please try again.');
       setStatus('idle');
     }
   };
 
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper" style={{ background: '#fff' }}>
       <Header />
 
-      <section className="contact-hero">
+      <main className="contact-unified-wrapper">
         <div className="main-container">
-          <div className="contact-hero-content">
-            <h1 className="hero-title">Let's Talk Food.</h1>
-            <p className="hero-subtitle">Have a recipe to share or a question to ask? We're all ears.</p>
-          </div>
-        </div>
-      </section>
+          <div className="contact-main-flex">
 
-      <section className="contact-main">
-        <div className="main-container">
-          <div className="contact-grid">
+            {/* TEXT SIDE */}
+            <div className="contact-intro-side">
+              <div className="icon-badge">
+                <FaUtensils />
+              </div>
+              <h1 className="display-title">Let’s connect.</h1>
+              <p className="intro-text">
+                Whether you have a suggestion, found a bug, or just want to
+                share your latest meal, we're here to listen.
+              </p>
 
-            {/* Contact Info Side */}
-            <div className="contact-info-panel">
-              <div className="info-item">
-                <div className="info-icon"><FaEnvelope /></div>
-                <div className="info-text">
-                  <h3>Email Us</h3>
-                  <p>hello@recipefinder.com</p>
-                  <p>support@recipefinder.com</p>
+              <div className="simple-info-list">
+                <div className="info-row">
+                  <FaEnvelope className="row-icon" />
+                  <span>hello@recipehunt.com</span>
                 </div>
-              </div>
-              <div className="info-item">
-                <div className="info-icon"><FaPhone /></div>
-                <div className="info-text">
-                  <h3>Call Us</h3>
-                  <p>+1 (555) 123-4567</p>
-                  <p>Mon - Fri, 9am - 6pm</p>
-                </div>
-              </div>
-              <div className="info-item">
-                <div className="info-icon"><FaMapMarkerAlt /></div>
-                <div className="info-text">
-                  <h3>Visit Our Studio</h3>
-                  <p>123 Culinary Drive</p>
-                  <p>San Francisco, CA 94103</p>
-                </div>
-              </div>
-
-              <div className="info-socials">
-                <div className="social-bubble">IG</div>
-                <div className="social-bubble">TW</div>
-                <div className="social-bubble">FB</div>
               </div>
             </div>
 
-            {/* Form Side */}
-            <div className="contact-form-card">
-              <form className="luxury-form" onSubmit={handleSubmit}>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Full Name</label>
+            {/* FORM SIDE */}
+            <div className="contact-card-container">
+              <div className="minimal-card">
+                <form onSubmit={handleSubmit} className="clean-form">
+                  <div className="input-group">
+                    <label>Your Name</label>
                     <input
                       type="text"
                       name="name"
-                      placeholder="John Doe"
+                      placeholder="Enter your name"
                       value={formData.name}
                       onChange={handleInputChange}
                       required
                     />
                   </div>
-                  <div className="form-group">
+                  <div className="input-group">
                     <label>Email Address</label>
                     <input
                       type="email"
                       name="email"
-                      placeholder="john@example.com"
+                      placeholder="Enter your email"
                       value={formData.email}
                       onChange={handleInputChange}
                       required
                     />
                   </div>
-                </div>
-                <div className="form-group">
-                  <label>Subject</label>
-                  <input
-                    type="text"
-                    name="subject"
-                    placeholder="Recipe Submission / Query"
-                    value={formData.subject}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Your Message</label>
-                  <textarea
-                    name="message"
-                    rows="5"
-                    placeholder="Tell us everything..."
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    required
-                  ></textarea>
-                </div>
-                <button
-                  type="submit"
-                  className={`submit-btn ${status}`}
-                  disabled={status !== 'idle'}
-                >
-                  {status === 'idle' && (
-                    <>
-                      <span>Send Message</span>
-                      <FaPaperPlane />
-                    </>
-                  )}
-                  {status === 'sending' && <span>Routing via SMTP...</span>}
-                  {status === 'success' && <span>Message Delivered!</span>}
-                </button>
-              </form>
+                  <div className="input-group">
+                    <label>Your Message</label>
+                    <textarea
+                      name="message"
+                      rows="6"
+                      placeholder="What is on your mind?"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      required
+                    ></textarea>
+                  </div>
+                  <button
+                    type="submit"
+                    className={`minimal-submit ${status}`}
+                    disabled={status !== 'idle'}
+                  >
+                    {status === 'idle' && (
+                      <>
+                        <span>Send Message</span>
+                        <FaPaperPlane />
+                      </>
+                    )}
+                    {status === 'sending' && <span>Sending...</span>}
+                    {status === 'success' && <span>Sent!</span>}
+                  </button>
+                </form>
+              </div>
             </div>
 
           </div>
         </div>
-      </section>
+      </main>
 
       <Footer />
     </div>
