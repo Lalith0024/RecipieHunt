@@ -7,23 +7,19 @@ import { FaChevronDown, FaSearch, FaArrowRight } from 'react-icons/fa';
 
 function About() {
   const [activeFaq, setActiveFaq] = useState(null);
-  const [faqSearch, setFaqSearch] = useState('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   const faqs = [
-    { q: 'Is it free to use?', a: 'Yes, searching and viewing recipes is completely free. We want to help everyone cook better at home.' },
-    { q: 'Where do recipes come from?', a: 'Our recipes are gathered from trusted home cooks and verified sources to ensure they actually work.' },
-    { q: 'Can I save my favorites?', a: 'Yes! Once you create an account, you can save any recipe to your personal profile for quick access.' },
-    { q: 'Do you have vegan options?', a: 'Definitely. We have a dedicated filter for veg and vegan meals to make your search easier.' },
+    { q: 'Is it free to use?', a: 'Yes, searching and viewing recipes is completely free for everyone. Our aim is to provide a seamless cooking experience for all.' },
+    { q: 'Where do recipes come from?', a: 'Our recipes are sourced from a blend of professional chefs and trusted home cooks, all strictly verified for taste and accuracy.' },
+    { q: 'Can I save my favorites?', a: 'Absolutely! Create an account to save any recipe to your personal profile for instant access anytime.' },
+    { q: 'Do you have vegetarian options?', a: 'Yes, we provide a dedicated filter for vegetarian and vegan meals, ensuring you find exactly what fits your diet.' },
+    { q: 'Is the platform mobile friendly?', a: 'RecipeHunt is designed for zero-complexity on any device. You can follow recipes butter-smooth on your phone while cooking.' },
+    { q: 'How often are new recipes added?', a: 'We update our collection daily to provide fresh inspiration and seasonal dishes from around the globe.' }
   ];
-
-  const filteredFaqs = faqs.filter(f =>
-    f.q.toLowerCase().includes(faqSearch.toLowerCase()) ||
-    f.a.toLowerCase().includes(faqSearch.toLowerCase())
-  );
 
   return (
     <div className="page-wrapper">
@@ -43,12 +39,12 @@ function About() {
               <span className="premium-tag">Redefining Home Cooking</span>
               <h1 className="display-title-sexy">Where passion <br />meets <span className="accent-text">Precision.</span></h1>
               <p className="elaborate-subtitle">
-                At RecipeHunt, our aim is to empower every home cook with professional-grade tools and
+                At RecipeHunt, our aim is to provide every home cook with professional-grade tools and
                 curated culinary knowledge. We provide a seamless platform that bridges the gap
                 between gourmet inspiration and daily kitchen reality.
               </p>
               <div className="btn-group-luxury">
-                <button className="gold-action-btn">Explore Cuisines <FaArrowRight /></button>
+                <button className="gold-action-btn" onClick={() => window.location.href = '/category'}>Explore Cuisines <FaArrowRight /></button>
               </div>
             </motion.div>
 
@@ -115,20 +111,11 @@ function About() {
       <section className="faq-symmetric-section-refined">
         <div className="main-container">
           <div className="faq-minimal-header">
-            <h2 className="section-title">Clarifications</h2>
-            <div className="premium-search-bar">
-              <FaSearch className="s-icon" />
-              <input
-                type="text"
-                placeholder="Find answers instantly..."
-                value={faqSearch}
-                onChange={(e) => setFaqSearch(e.target.value)}
-              />
-            </div>
+            <h2 className="section-title">Frequently Asked Questions</h2>
           </div>
 
           <div className="faq-columns">
-            {filteredFaqs.map((faq, i) => (
+            {faqs.map((faq, i) => (
               <motion.div
                 key={i}
                 className={`luxury-faq-item ${activeFaq === i ? 'active' : ''}`}

@@ -64,11 +64,11 @@ function Contact() {
               <div className="icon-badge-glow">
                 <FaUtensils />
               </div>
-              <h1 className="ultra-display">Have a taste <br />to share?</h1>
+              <h1 className="ultra-display">Have some <br />concerns?</h1>
               <p className="narrative-p">
-                We're always looking for new perspectives in our kitchen. Whether
-                you're a seasoned chef or a beginner with a great idea,
-                let's start a conversation.
+                We're here to help you with anything you need. Whether you're
+                facing an issue or have a suggestion, feel free to reach out
+                to our support team.
               </p>
 
               <div className="animated-contact-links">
@@ -76,7 +76,7 @@ function Contact() {
                   <div className="link-circle"><FaEnvelope /></div>
                   <div className="link-val">
                     <span>Direct Enquiries</span>
-                    <strong>hello@recipehunt.com</strong>
+                    <strong>support@recipehunt.com</strong>
                   </div>
                 </div>
               </div>
@@ -90,7 +90,7 @@ function Contact() {
             >
               <div className="contact-glass-box">
                 <div className="box-header">
-                  <h2>Send a Transmission</h2>
+                  <h2>Get in Touch</h2>
                   <p>Our response time is typically within 24 hours.</p>
                 </div>
 
@@ -105,7 +105,7 @@ function Contact() {
                       required
                       id="name"
                     />
-                    <label htmlFor="name">Full Identity</label>
+                    <label htmlFor="name">Your Name</label>
                   </div>
 
                   <div className="form-field">
@@ -118,7 +118,7 @@ function Contact() {
                       required
                       id="email"
                     />
-                    <label htmlFor="email">Email Interface</label>
+                    <label htmlFor="email">Your Email</label>
                   </div>
 
                   <div className="form-field">
