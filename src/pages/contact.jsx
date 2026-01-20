@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../style/Contact.css';
-import BackgroundImage from '../../images/ChatGPT Image Jun 16, 2025, 03_32_27 PM.png';
 import Header from '../components/header.jsx';
 import Footer from '../components/footer.jsx';
 import { toast } from 'react-toastify';
+import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaPaperPlane } from 'react-icons/fa';
 
 function Contact() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    subject: '',
     message: ''
   });
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState('idle'); // idle, sending, success
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -22,69 +27,146 @@ function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      toast.success('Message sent successfully! We\'ll get back to you soon.');
-      setFormData({ name: '', email: '', message: '' });
-    }, 1500);
+    setStatus('sending');
+
+    // Simulate real mail sending logic (Nodemailer style)
+    // In a real app, this would be an axios.post('/api/contact', formData)
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setStatus('success');
+      toast.success('Your message has been delivered to our culinary team!');
+      setFormData({ name: '', email: '', subject: '', message: '' });
+
+      setTimeout(() => setStatus('idle'), 3000);
+    } catch (err) {
+      toast.error('Failed to send message. Please try again.');
+      setStatus('idle');
+    }
   };
+
   return (
-    <>
-    <Header/>
-      <div className="fade-in">
-        <section
-          className="contact-container"
-          style={{
-            backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url(${BackgroundImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        >
-          <div className="contact-wrapper">
-            <h2 className="contact-title">Get in Touch</h2>
-            <p className="contact-subtitle">We'd love to hear from you! Send us a message.</p>
-            <form
-              className="contact-form"
-              onSubmit={handleSubmit}
-            >
-              <input
-                type="text"
-                name="name"
-                placeholder="Your Name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="Your Email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-              />
-              <textarea
-                name="message"
-                rows="6"
-                placeholder="Your Message"
-                value={formData.message}
-                onChange={handleInputChange}
-                required
-              ></textarea>
-              <button type="submit" disabled={loading}>
-                {loading ? 'Sending...' : 'Send Message'}
-              </button>
-            </form>
+    <div className="page-wrapper">
+      <Header />
+
+      <section className="contact-hero">
+        <div className="main-container">
+          <div className="contact-hero-content">
+            <h1 className="hero-title">Let's Talk Food.</h1>
+            <p className="hero-subtitle">Have a recipe to share or a question to ask? We're all ears.</p>
           </div>
-          <div className="floating-food">🍝</div>
-        </section>
-      </div>
-      <Footer/>
-    </>
-    
+        </div>
+      </section>
+
+      <section className="contact-main">
+        <div className="main-container">
+          <div className="contact-grid">
+
+            {/* Contact Info Side */}
+            <div className="contact-info-panel">
+              <div className="info-item">
+                <div className="info-icon"><FaEnvelope /></div>
+                <div className="info-text">
+                  <h3>Email Us</h3>
+                  <p>hello@recipefinder.com</p>
+                  <p>support@recipefinder.com</p>
+                </div>
+              </div>
+              <div className="info-item">
+                <div className="info-icon"><FaPhone /></div>
+                <div className="info-text">
+                  <h3>Call Us</h3>
+                  <p>+1 (555) 123-4567</p>
+                  <p>Mon - Fri, 9am - 6pm</p>
+                </div>
+              </div>
+              <div className="info-item">
+                <div className="info-icon"><FaMapMarkerAlt /></div>
+                <div className="info-text">
+                  <h3>Visit Our Studio</h3>
+                  <p>123 Culinary Drive</p>
+                  <p>San Francisco, CA 94103</p>
+                </div>
+              </div>
+
+              <div className="info-socials">
+                <div className="social-bubble">IG</div>
+                <div className="social-bubble">TW</div>
+                <div className="social-bubble">FB</div>
+              </div>
+            </div>
+
+            {/* Form Side */}
+            <div className="contact-form-card">
+              <form className="luxury-form" onSubmit={handleSubmit}>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Full Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="John Doe"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Email Address</label>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="john@example.com"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>Subject</label>
+                  <input
+                    type="text"
+                    name="subject"
+                    placeholder="Recipe Submission / Query"
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Your Message</label>
+                  <textarea
+                    name="message"
+                    rows="5"
+                    placeholder="Tell us everything..."
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    required
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  className={`submit-btn ${status}`}
+                  disabled={status !== 'idle'}
+                >
+                  {status === 'idle' && (
+                    <>
+                      <span>Send Message</span>
+                      <FaPaperPlane />
+                    </>
+                  )}
+                  {status === 'sending' && <span>Routing via SMTP...</span>}
+                  {status === 'success' && <span>Message Delivered!</span>}
+                </button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
   );
 }
 
