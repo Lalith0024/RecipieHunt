@@ -5,17 +5,6 @@ import Footer from '../components/footer.jsx';
 
 const API_KEY = 'd5dc6a6d47af468fa68072cc1f0700b9';
 
-const QUICK_CATEGORIES = [
-  { name: 'Pizza', img: 'https://cdn-icons-png.flaticon.com/512/3595/3595455.png' },
-  { name: 'Burger', img: 'https://cdn-icons-png.flaticon.com/512/706/706918.png' },
-  { name: 'Pasta', img: 'https://cdn-icons-png.flaticon.com/512/2718/2718314.png' },
-  { name: 'Salad', img: 'https://cdn-icons-png.flaticon.com/512/2153/2153788.png' },
-  { name: 'Dessert', img: 'https://cdn-icons-png.flaticon.com/512/10054/10054320.png' },
-  { name: 'Drinks', img: 'https://cdn-icons-png.flaticon.com/512/3100/3100555.png' },
-  { name: 'Sushi', img: 'https://cdn-icons-png.flaticon.com/512/2252/2252258.png' },
-  { name: 'Steak', img: 'https://cdn-icons-png.flaticon.com/512/2550/2550186.png' },
-];
-
 function Home() {
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
@@ -55,24 +44,8 @@ function Home() {
       setRecipes(data.results || []);
       setFilteredRecipes(data.results || []);
       // Scroll to grid
-      document.querySelector('.filters-bar').scrollIntoView({ behavior: 'smooth' });
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const filterByCategory = async (cat) => {
-    setLoading(true);
-    setSearch('');
-    setActiveFilter(cat);
-    try {
-      const res = await fetch(`https://api.spoonacular.com/recipes/complexSearch?type=${cat.toLowerCase()}&number=20&addRecipeInformation=true&apiKey=${API_KEY}`);
-      const data = await res.json();
-      setRecipes(data.results || []);
-      setFilteredRecipes(data.results || []);
-      document.querySelector('.filters-bar').scrollIntoView({ behavior: 'smooth' });
+      const filterBar = document.querySelector('.filters-bar');
+      if (filterBar) filterBar.scrollIntoView({ behavior: 'smooth' });
     } catch (err) {
       console.error(err);
     } finally {
@@ -136,23 +109,6 @@ function Home() {
             <div className="hero-image-side">
               <img src="/hero_main.png" alt="Featured Dish" className="floating-dish" />
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CATEGORIES SECTION */}
-      <section className="categories-section">
-        <div className="main-container">
-          <h2 className="section-title">What's on your mind?</h2>
-          <div className="cat-scroll-wrapper">
-            {QUICK_CATEGORIES.map((cat, i) => (
-              <div key={i} className="cat-item" onClick={() => filterByCategory(cat.name)}>
-                <div className="cat-img-box">
-                  <img src={cat.img} alt={cat.name} />
-                </div>
-                <span className="cat-name">{cat.name}</span>
-              </div>
-            ))}
           </div>
         </div>
       </section>

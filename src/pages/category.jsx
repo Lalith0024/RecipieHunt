@@ -6,18 +6,28 @@ import Footer from '../components/footer.jsx';
 const API_KEY = 'd5dc6a6d47af468fa68072cc1f0700b9';
 
 const CATEGORIES = [
-  { name: 'Breakfast', img: 'https://cdn-icons-png.flaticon.com/512/706/706918.png' },
-  { name: 'Main Course', img: 'https://cdn-icons-png.flaticon.com/512/2718/2718314.png' },
-  { name: 'Dessert', img: 'https://cdn-icons-png.flaticon.com/512/10054/10054320.png' },
-  { name: 'Appetizer', img: 'https://cdn-icons-png.flaticon.com/512/2550/2550186.png' },
-  { name: 'Salad', img: 'https://cdn-icons-png.flaticon.com/512/2153/2153788.png' },
-  { name: 'Soup', img: 'https://cdn-icons-png.flaticon.com/512/4359/4359654.png' },
-  { name: 'Beverage', img: 'https://cdn-icons-png.flaticon.com/512/3100/3100555.png' },
-  { name: 'Snack', img: 'https://cdn-icons-png.flaticon.com/512/2252/2252258.png' },
+  { name: 'Pizza', img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=300' },
+  { name: 'Burger', img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=300' },
+  { name: 'Pasta', img: 'https://images.unsplash.com/photo-1473093226795-af9932fe5856?auto=format&fit=crop&q=80&w=300' },
+  { name: 'Appetizer', img: 'https://images.unsplash.com/photo-1541014741259-df529411b96a?auto=format&fit=crop&q=80&w=300' },
+  { name: 'Salad', img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=300' },
+  { name: 'Dessert', img: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&q=80&w=300' },
+  { name: 'Beverage', img: 'https://images.unsplash.com/photo-1544145945-f904253d0c7b?auto=format&fit=crop&q=80&w=300' },
+  { name: 'Soup', img: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&q=80&w=300' },
+];
+
+const TIME_FILTERS = [
+  { label: 'Any Time', value: 0 },
+  { label: 'Under 15m', value: 15 },
+  { label: 'Under 30m', value: 30 },
+  { label: 'Under 45m', value: 45 },
 ];
 
 function Category() {
   const [category, setCategory] = useState('');
+  const [search, setSearch] = useState('');
+  const [maxTime, setMaxTime] = useState(0);
+  const [vegOnly, setVegOnly] = useState(false);
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
@@ -25,15 +35,22 @@ function Category() {
   const [modalLoading, setModalLoading] = useState(false);
 
   useEffect(() => {
-    if (category) {
+    const timer = setTimeout(() => {
       fetchRecipes();
-    }
-  }, [category]);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [category, maxTime, search, vegOnly]);
 
   const fetchRecipes = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`https://api.spoonacular.com/recipes/complexSearch?type=${category.toLowerCase()}&number=20&addRecipeInformation=true&apiKey=${API_KEY}`);
+      let url = `https://api.spoonacular.com/recipes/complexSearch?number=20&addRecipeInformation=true&apiKey=${API_KEY}`;
+      if (category) url += `&type=${encodeURIComponent(category.toLowerCase())}`;
+      if (search) url += `&query=${encodeURIComponent(search)}`;
+      if (maxTime > 0) url += `&maxReadyTime=${maxTime}`;
+      if (vegOnly) url += `&diet=vegetarian`;
+
+      const res = await fetch(url);
       const data = await res.json();
       setRecipes(data.results || []);
     } catch (err) {
@@ -64,50 +81,108 @@ function Category() {
       <div style={{ marginTop: '100px' }}>
         <section className="categories-section">
           <div className="main-container">
-            <h1 className="hero-title" style={{ color: 'var(--text-main)', fontSize: '3rem', marginBottom: '40px' }}>Explore Cuisines</h1>
+            <h1 className="hero-title" style={{ color: 'var(--text-main)', fontSize: '3.5rem', marginBottom: '10px' }}>Culinary Categories</h1>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '40px', fontSize: '1.2rem' }}>Discover the perfect recipe for every mood and occasion.</p>
+
+            {/* Search Bar on Category Page */}
+            <div className="hero-search-container" style={{ maxWidth: '800px', margin: '0 0 50px 0' }}>
+              <div className="hero-search-bar" style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.08)', border: '1px solid var(--border-light)' }}>
+                <input
+                  type="text"
+                  placeholder="What are you craving today?"
+                  className="hero-search-input"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <button className="hero-search-btn">Search</button>
+              </div>
+            </div>
+
             <div className="cat-scroll-wrapper">
+              <div
+                className={`cat-item ${category === '' ? 'active' : ''}`}
+                onClick={() => setCategory('')}
+              >
+                <div className="cat-img-box" style={category === '' ? { background: 'var(--primary)' } : {}}>
+                  <div style={{ fontSize: '1.1rem', fontWeight: '800', color: category === '' ? 'white' : 'var(--text-muted)' }}>ALL</div>
+                </div>
+                <span className="cat-name">Discover All</span>
+              </div>
               {CATEGORIES.map((cat, i) => (
                 <div key={i} className={`cat-item ${category === cat.name ? 'active' : ''}`} onClick={() => setCategory(cat.name)}>
-                  <div className="cat-img-box" style={category === cat.name ? { borderColor: 'var(--primary)' } : {}}>
+                  <div className="cat-img-box">
                     <img src={cat.img} alt={cat.name} />
                   </div>
                   <span className="cat-name">{cat.name}</span>
                 </div>
               ))}
             </div>
+
+            {/* Advanced Filters */}
+            <div className="filter-pills" style={{ marginTop: '40px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+                <span style={{ fontWeight: '700', color: 'var(--text-main)', fontSize: '0.9rem' }}>READY WITHIN:</span>
+                {TIME_FILTERS.map(tf => (
+                  <button
+                    key={tf.value}
+                    className={`pill ${maxTime === tf.value ? 'active' : ''}`}
+                    onClick={() => setMaxTime(tf.value)}
+                  >
+                    {tf.label}
+                  </button>
+                ))}
+              </div>
+
+              <div style={{ width: '2px', height: '24px', background: 'var(--border-light)', margin: '0 10px' }}></div>
+
+              <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+                <button
+                  className={`pill ${vegOnly ? 'active' : ''}`}
+                  onClick={() => setVegOnly(!vegOnly)}
+                  style={vegOnly ? { borderColor: '#48c479', color: '#48c479', background: 'rgba(72, 196, 121, 0.05)' } : {}}
+                >
+                  {vegOnly ? '✓ Vegetarian Only' : 'Vegetarian Only'}
+                </button>
+              </div>
+            </div>
           </div>
         </section>
 
         <div className="main-container" style={{ minHeight: '400px', paddingTop: '40px' }}>
-          {!category && (
-            <div style={{ textAlign: 'center', padding: '100px 0', color: 'var(--text-muted)' }}>
-              <h2>Choose a category to start your journey</h2>
-            </div>
-          )}
-
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '100px 0' }}>Loading gourmet recipes...</div>
-          ) : (
-            <div className="recipe-grid">
-              {recipes.map(recipe => (
-                <div key={recipe.id} className="recipe-card" onClick={() => openModal(recipe.id)}>
-                  <div className="card-img-wrapper">
-                    <img src={recipe.image} alt={recipe.title} className="card-img" />
-                    <div className="card-overlay">
-                      <span className="card-time">{recipe.readyInMinutes} MINS</span>
-                    </div>
-                  </div>
-                  <div className="card-info">
-                    <h3 className="card-title">{recipe.title}</h3>
-                    <div className="card-meta">
-                      <span className="rating-star">★ {(recipe.healthScore / 20).toFixed(1)}</span>
-                      <span>•</span>
-                      <span>{recipe.servings} Servings</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div style={{ textAlign: 'center', padding: '100px 0', fontSize: '1.2rem', color: 'var(--text-muted)' }}>
+              Gathering the best recipes...
             </div>
+          ) : (
+            <>
+              {recipes.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '100px 0', color: 'var(--text-muted)' }}>
+                  <h2>No recipes found matching your filters.</h2>
+                  <p>Try adjusting your search or category.</p>
+                </div>
+              ) : (
+                <div className="recipe-grid">
+                  {recipes.map(recipe => (
+                    <div key={recipe.id} className="recipe-card" onClick={() => openModal(recipe.id)}>
+                      <div className="card-img-wrapper">
+                        <img src={recipe.image} alt={recipe.title} className="card-img" />
+                        <div className="card-overlay">
+                          <span className="card-time">{recipe.readyInMinutes} MINS</span>
+                        </div>
+                      </div>
+                      <div className="card-info">
+                        <h3 className="card-title">{recipe.title}</h3>
+                        <div className="card-meta">
+                          <span className="rating-star">★ {(recipe.healthScore / 20).toFixed(1)}</span>
+                          <span>•</span>
+                          <span>{recipe.servings} Servings</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
