@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import '../style/Contact.css';
 import Header from '../components/header.jsx';
 import Footer from '../components/footer.jsx';
+import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
-import { FaEnvelope, FaPaperPlane, FaUtensils } from 'react-icons/fa';
+import { FaEnvelope, FaPaperPlane, FaUtensils, FaArrowRight } from 'react-icons/fa';
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -29,12 +30,10 @@ function Contact() {
     setStatus('sending');
 
     try {
-      // Logic for Mail
       await new Promise(resolve => setTimeout(resolve, 2000));
       setStatus('success');
-      toast.success('Thanks for reaching out! We will reply soon.');
+      toast.success('Your recipe/message is being routed to the team!');
       setFormData({ name: '', email: '', message: '' });
-
       setTimeout(() => setStatus('idle'), 3000);
     } catch (err) {
       toast.error('Something went wrong. Please try again.');
@@ -43,86 +42,115 @@ function Contact() {
   };
 
   return (
-    <div className="page-wrapper" style={{ background: '#fff' }}>
+    <div className="page-wrapper" style={{ background: '#fff', overflow: 'hidden' }}>
       <Header />
 
-      <main className="contact-unified-wrapper">
-        <div className="main-container">
-          <div className="contact-main-flex">
+      <main className="contact-luxury-canvas">
+        {/* ANIMATED BACKGROUND BLOB */}
+        <div className="blob-bg-container">
+          <div className="blob blob-1"></div>
+          <div className="blob blob-2"></div>
+        </div>
 
-            {/* TEXT SIDE */}
-            <div className="contact-intro-side">
-              <div className="icon-badge">
+        <div className="main-container">
+          <div className="luxury-contact-flex">
+
+            <motion.div
+              initial={{ opacity: 0, x: -60 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="contact-narrative"
+            >
+              <div className="icon-badge-glow">
                 <FaUtensils />
               </div>
-              <h1 className="display-title">Let’s connect.</h1>
-              <p className="intro-text">
-                Whether you have a suggestion, found a bug, or just want to
-                share your latest meal, we're here to listen.
+              <h1 className="ultra-display">Have a taste <br />to share?</h1>
+              <p className="narrative-p">
+                We're always looking for new perspectives in our kitchen. Whether
+                you're a seasoned chef or a beginner with a great idea,
+                let's start a conversation.
               </p>
 
-              <div className="simple-info-list">
-                <div className="info-row">
-                  <FaEnvelope className="row-icon" />
-                  <span>hello@recipehunt.com</span>
+              <div className="animated-contact-links">
+                <div className="a-link-row">
+                  <div className="link-circle"><FaEnvelope /></div>
+                  <div className="link-val">
+                    <span>Direct Enquiries</span>
+                    <strong>hello@recipehunt.com</strong>
+                  </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            {/* FORM SIDE */}
-            <div className="contact-card-container">
-              <div className="minimal-card">
-                <form onSubmit={handleSubmit} className="clean-form">
-                  <div className="input-group">
-                    <label>Your Name</label>
+            <motion.div
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="glass-form-container"
+            >
+              <div className="contact-glass-box">
+                <div className="box-header">
+                  <h2>Send a Transmission</h2>
+                  <p>Our response time is typically within 24 hours.</p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="premium-compact-form">
+                  <div className="form-field">
                     <input
                       type="text"
                       name="name"
-                      placeholder="Enter your name"
+                      placeholder=" "
                       value={formData.name}
                       onChange={handleInputChange}
                       required
+                      id="name"
                     />
+                    <label htmlFor="name">Full Identity</label>
                   </div>
-                  <div className="input-group">
-                    <label>Email Address</label>
+
+                  <div className="form-field">
                     <input
                       type="email"
                       name="email"
-                      placeholder="Enter your email"
+                      placeholder=" "
                       value={formData.email}
                       onChange={handleInputChange}
                       required
+                      id="email"
                     />
+                    <label htmlFor="email">Email Interface</label>
                   </div>
-                  <div className="input-group">
-                    <label>Your Message</label>
+
+                  <div className="form-field">
                     <textarea
                       name="message"
-                      rows="6"
-                      placeholder="What is on your mind?"
+                      rows="4"
+                      placeholder=" "
                       value={formData.message}
                       onChange={handleInputChange}
                       required
+                      id="msg"
                     ></textarea>
+                    <label htmlFor="msg">Your Message</label>
                   </div>
+
                   <button
                     type="submit"
-                    className={`minimal-submit ${status}`}
+                    className={`glow-submit-btn ${status}`}
                     disabled={status !== 'idle'}
                   >
                     {status === 'idle' && (
                       <>
-                        <span>Send Message</span>
-                        <FaPaperPlane />
+                        <span>Connect with us</span>
+                        <FaArrowRight />
                       </>
                     )}
-                    {status === 'sending' && <span>Sending...</span>}
-                    {status === 'success' && <span>Sent!</span>}
+                    {status === 'sending' && <span>Routing Message...</span>}
+                    {status === 'success' && <span>Message Sent!</span>}
                   </button>
                 </form>
               </div>
-            </div>
+            </motion.div>
 
           </div>
         </div>
