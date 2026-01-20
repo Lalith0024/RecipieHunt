@@ -55,33 +55,42 @@ function Contact() {
         <div className="main-container">
           <div className="luxury-contact-flex">
 
+            {/* VISUAL SIDE - Left */}
             <motion.div
               initial={{ opacity: 0, x: -60 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              className="contact-narrative"
+              className="contact-visual-side"
             >
-              <div className="icon-badge-glow">
-                <FaUtensils />
-              </div>
-              <h1 className="ultra-display">Have some <br />concerns?</h1>
-              <p className="narrative-p">
-                We're here to help you with anything you need. Whether you're
-                facing an issue or have a suggestion, feel free to reach out
-                to our support team.
-              </p>
-
-              <div className="animated-contact-links">
-                <div className="a-link-row">
-                  <div className="link-circle"><FaEnvelope /></div>
-                  <div className="link-val">
-                    <span>Direct Enquiries</span>
-                    <strong>support@recipehunt.com</strong>
+              <div className="image-stack-contact">
+                <img
+                  src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80&w=800"
+                  alt="Cooking together"
+                  className="main-contact-img"
+                />
+                <div className="support-badge-float">
+                  <div className="badge-icon"><FaUtensils /></div>
+                  <div className="badge-text">
+                    <span>Active Support</span>
+                    <strong>24/7 Response</strong>
                   </div>
+                </div>
+              </div>
+
+              <div className="contact-text-brief">
+                <h1 className="ultra-display">Have some <br />concerns?</h1>
+                <p className="narrative-p">
+                  We're here to help you with anything you need.
+                  Drop us a message and our team will get back to you.
+                </p>
+                <div className="direct-mail-row">
+                  <FaEnvelope className="m-icon" />
+                  <strong>support@recipehunt.com</strong>
                 </div>
               </div>
             </motion.div>
 
+            {/* FORM SIDE - Right */}
             <motion.div
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
@@ -91,7 +100,7 @@ function Contact() {
               <div className="contact-glass-box">
                 <div className="box-header">
                   <h2>Get in Touch</h2>
-                  <p>Our response time is typically within 24 hours.</p>
+                  <p>Send your queries through the form below.</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="premium-compact-form">
@@ -141,12 +150,12 @@ function Contact() {
                   >
                     {status === 'idle' && (
                       <>
-                        <span>Connect with us</span>
+                        <span>Send Message</span>
                         <FaArrowRight />
                       </>
                     )}
-                    {status === 'sending' && <span>Routing Message...</span>}
-                    {status === 'success' && <span>Message Sent!</span>}
+                    {status === 'sending' && <span>Routing...</span>}
+                    {status === 'success' && <span>Sent!</span>}
                   </button>
                 </form>
               </div>
