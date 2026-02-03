@@ -1,37 +1,43 @@
-import React from 'react';
-import './App.css';
-import Header from './components/header.jsx';
-import Footer from './components/footer.jsx';
-import Home from './pages/home.jsx';
-import About from './pages/about.jsx';
-import Contact from './pages/contact.jsx';
-import Categories from './pages/category.jsx';
-import Login from './pages/login.jsx';
-import Register from './pages/register.jsx';
-import Profile from './pages/profile.jsx';
+import React, { Suspense, lazy } from 'react';
+import './styles/App.css';
+import Header from './components/Header.jsx';
+import Footer from './components/Footer.jsx';
 import { AuthProvider } from './contexts/AuthContext.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './style/toasts.css';
+import './styles/Toasts.css';
+import Loader from './components/Common/Loader.jsx';
+
+// Lazy loading for production performance
+const Home = lazy(() => import('./pages/Home.jsx'));
+const About = lazy(() => import('./pages/About.jsx'));
+const Contact = lazy(() => import('./pages/Contact.jsx'));
+const Category = lazy(() => import('./pages/Category.jsx'));
+const Login = lazy(() => import('./pages/Login.jsx'));
+const Register = lazy(() => import('./pages/Register.jsx'));
+const Profile = lazy(() => import('./pages/Profile.jsx'));
+
 
 function App() {
   return (
     <AuthProvider>
       <div className="page-container">
         <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-            <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
-            <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
-            <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
-            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-            <Route path="*" element={<Navigate to="/home" replace />} />
-          </Routes>
+          <Suspense fallback={<Loader fullPage />}>
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+              <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
+              <Route path="/categories" element={<ProtectedRoute><Category /></ProtectedRoute>} />
+              <Route path="/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="*" element={<Navigate to="/home" replace />} />
+            </Routes>
+          </Suspense>
         </main>
       </div>
       <ToastContainer

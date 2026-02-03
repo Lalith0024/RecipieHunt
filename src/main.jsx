@@ -2,12 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
-// Removed toast container; moving to inline UX per guidelines
+import GlobalErrorBoundary from './components/Common/GlobalErrorBoundary.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <GlobalErrorBoundary>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </GlobalErrorBoundary>
   </React.StrictMode>
 );

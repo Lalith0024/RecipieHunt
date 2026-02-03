@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import '../style/about.css';
-import Header from '../components/header.jsx';
-import Footer from '../components/footer.jsx';
+import '../styles/About.css';
+import Header from '../components/Header.jsx';
+import Footer from '../components/Footer.jsx';
 import { motion } from 'framer-motion';
 import { FaChevronDown, FaSearch, FaArrowRight } from 'react-icons/fa';
+import useSEO from '../hooks/useSEO';
 
 function About() {
   const [activeFaq, setActiveFaq] = useState(null);
+
+  useSEO(
+    "About Us",
+    "Learn more about RecipeHunt and our mission to simplify home cooking with professional tools and global recipes."
+  );
 
   useEffect(() => {
     window.scrollTo(0, 0);
