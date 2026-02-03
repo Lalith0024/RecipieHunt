@@ -57,6 +57,9 @@ The responsive architecture ensures seamless performance across devices as the p
 <img width="1512" height="982" alt="image" src="https://github.com/user-attachments/assets/8a431d10-fbe1-4fff-bf85-37654dc9fa52" />
 <img width="1512" height="982" alt="image" src="https://github.com/user-attachments/assets/9c7e44e0-6aab-47cc-97ba-4e6884ee833c" />
 
+## Contact Page
+<img width="1512" height="982" alt="image" src="https://github.com/user-attachments/assets/6f1dcd29-1878-4b6b-ad09-9c89ed5cbf76" />
+
 
 
 ## 🌐 Live Demo
