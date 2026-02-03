@@ -1,14 +1,17 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../style/login.css';
+import '../styles/Login.css';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useAuth } from '../contexts/AuthContext.jsx';
+import useAuth from '../hooks/useAuth';
 import { mapFirebaseError } from '../utils/firebaseErrorMessages';
+import useSEO from '../hooks/useSEO';
 
 const Login = () => {
   const navigate = useNavigate();
   const { user, login, googleLogin } = useAuth();
+
+  useSEO("Login", "Login to RecipeHunt to discover and save your favorite recipes.");
 
   // Prevent logged-in users from seeing the login page
   React.useEffect(() => {

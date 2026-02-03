@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import '../style/Header.css';
+import '../styles/Header.css';
 import { Drawer } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 import { FaUserCircle } from 'react-icons/fa';
-import { useAuth } from '../contexts/AuthContext';
+import useAuth from '../hooks/useAuth';
 
 const Header = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);

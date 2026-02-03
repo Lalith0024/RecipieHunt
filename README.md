@@ -47,15 +47,22 @@ The responsive architecture ensures seamless performance across devices as the p
 <img width="174" height="206" alt="Screenshot 2025-08-16 at 12 12 19 AM" src="https://github.com/user-attachments/assets/e23ed58e-7b7a-40b3-b3d7-8327314cd13e" />
 
 ## Project previvew
-<img width="1510" height="807" alt="Screenshot 2025-08-16 at 12 13 02 AM" src="https://github.com/user-attachments/assets/db9c588b-0376-4af2-8b40-d67d9b843627" />
+<img width="1512" height="982" alt="image" src="https://github.com/user-attachments/assets/86397206-5520-4d89-9121-7212d4bff45e" />
+
 
 ## Home page
-<img width="1512" height="821" alt="Screenshot 2025-08-16 at 12 15 17 AM" src="https://github.com/user-attachments/assets/b9c1932c-2b9e-4548-9de3-3970882dead5" />
+<img width="1512" height="982" alt="image" src="https://github.com/user-attachments/assets/656c22b5-9246-4988-8331-8046f284c209" />
+
+## About Page
+<img width="1512" height="982" alt="image" src="https://github.com/user-attachments/assets/8a431d10-fbe1-4fff-bf85-37654dc9fa52" />
+<img width="1512" height="982" alt="image" src="https://github.com/user-attachments/assets/9c7e44e0-6aab-47cc-97ba-4e6884ee833c" />
+
+
 
 ## 🌐 Live Demo
 <p>
   <a href="https://capstone-2-chi.vercel.app/home" target="_blank">
-    <img src="https://img.shields.io/badge/Visit%20RecipeHunt-FF5722?style=for-the-badge&logo=vercel&logoColor=white" alt="RecipeHunt Live Link"/>
+    RecipeHunt Webapp
   </a>
 </p>
 

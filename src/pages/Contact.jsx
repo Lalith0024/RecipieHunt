@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import '../style/Contact.css';
-import Header from '../components/header.jsx';
-import Footer from '../components/footer.jsx';
+import '../styles/Contact.css';
+import Header from '../components/Header.jsx';
+import Footer from '../components/Footer.jsx';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { FaEnvelope, FaPaperPlane, FaUtensils, FaArrowRight } from 'react-icons/fa';
+import useSEO from '../hooks/useSEO';
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,11 @@ function Contact() {
     message: ''
   });
   const [status, setStatus] = useState('idle');
+
+  useSEO(
+    "Contact Us",
+    "Have questions or a recipe to share? Get in touch with the RecipeHunt team today."
+  );
 
   useEffect(() => {
     window.scrollTo(0, 0);

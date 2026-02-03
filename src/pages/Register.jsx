@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from "react";
-import "../style/register.css";
+import "../styles/Register.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from '../contexts/AuthContext.jsx';
+import useAuth from '../hooks/useAuth';
 import { toast } from 'react-toastify';
 import { mapFirebaseError } from '../utils/firebaseErrorMessages';
+import useSEO from '../hooks/useSEO';
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -18,6 +19,8 @@ const Register = () => {
 
   const navigate = useNavigate();
   const { user, signup, googleLogin } = useAuth();
+
+  useSEO("Register", "Join RecipeHunt today to start your culinary journey and save amazing recipes.");
 
   // Prevent logged-in users from seeing the register page
   React.useEffect(() => {

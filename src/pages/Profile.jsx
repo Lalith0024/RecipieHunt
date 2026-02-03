@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import Header from '../components/header.jsx';
-import Footer from '../components/footer.jsx';
-import '../style/profile.css';
-import { useAuth } from '../contexts/AuthContext';
+import Header from '../components/Header.jsx';
+import Footer from '../components/Footer.jsx';
+import '../styles/Profile.css';
+import useAuth from '../hooks/useAuth';
 
 function Profile() {
   const navigate = useNavigate();

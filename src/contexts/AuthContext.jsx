@@ -14,9 +14,8 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
-const AuthContext = createContext(undefined);
+export const AuthContext = createContext(undefined);
 
-export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -73,16 +72,16 @@ export const AuthProvider = ({ children }) => {
     }
     try {
       await sendEmailVerification(createdUser);
-    } catch {}
+    } catch { }
     try {
       if (db) {
         await setDoc(doc(db, 'users', createdUser.uid), {
-        email: createdUser.email,
-        displayName: additionalData?.displayName || '',
-        createdAt: serverTimestamp(),
+          email: createdUser.email,
+          displayName: additionalData?.displayName || '',
+          createdAt: serverTimestamp(),
         }, { merge: true });
       }
-    } catch {}
+    } catch { }
     return createdUser;
   };
 
@@ -128,7 +127,7 @@ export const AuthProvider = ({ children }) => {
           createdAt: serverTimestamp(),
         }, { merge: true });
       }
-    } catch {}
+    } catch { }
     return gUser;
   };
 
